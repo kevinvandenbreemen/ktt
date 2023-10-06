@@ -86,4 +86,39 @@ class SqliteLibraryExperimentationTest {
         listResult.size `should be equal to`(2)
     }
 
+    @Test
+    fun `should execute prepared statements`() {
+        val connection: Connection = DriverManager.getConnection("jdbc:sqlite::memory:").also { connection->
+            connection.autoCommit = false
+        }
+        connection.createStatement().use {
+            it.executeUpdate("""
+                CREATE TABLE test(
+                    id INT PRIMARY KEY NOT NULL,
+                    name TEXT NOT NULL
+                )
+            """.trimIndent())
+            it.executeUpdate("INSERT INTO test(id, name) VALUES (1, 'test'), (2, 'bazinga')")
+        }
+
+        connection.commit()
+
+        val listResult: MutableList<Map<String, Any>> = mutableListOf()
+        connection.prepareStatement("SELECT id, name FROM test WHERE name=?").use {
+            it.setString(1, "bazinga")
+            val result = it.executeQuery()
+            while(result.next()) {
+                mutableMapOf<String, Any>().run {
+                    put("id", result.getString("id"))
+                    put("name", result.getString("name"))
+
+                    listResult.add(this)
+                }
+            }
+        }
+
+        println(listResult)
+        listResult.size `should be equal to`(1)
+    }
+
 }
