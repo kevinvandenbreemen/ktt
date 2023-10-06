@@ -2,6 +2,7 @@ package com.vandenbreemen.ktt.persistence
 
 import com.vandenbreemen.kevincommon.db.DatabaseSchema
 import com.vandenbreemen.kevincommon.db.SQLiteDAO
+import com.vandenbreemen.ktt.message.NoSuchPageError
 import com.vandenbreemen.ktt.model.Page
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +31,7 @@ class SQLiteWikiRepository(private val databasePath: String) {
         """.trimIndent())
     }
 
-    suspend fun createPage(page: Page) {
+    fun createPage(page: Page) {
         CoroutineScope(Dispatchers.IO).launch {
             dao.insert("INSERT INTO page(title, content) VALUES(?, ?)",
                 arrayOf(page.title, page.content)
@@ -38,12 +39,18 @@ class SQLiteWikiRepository(private val databasePath: String) {
         }
     }
 
-    suspend fun loadPage(s: String): CompletableFuture<Page> {
+    fun loadPage(s: String): CompletableFuture<Page> {
 
         val promise = CompletableFuture<Page>()
 
         CoroutineScope(Dispatchers.IO).launch {
             val raw = dao.query("SELECT title, content FROM page WHERE id=?", arrayOf(s))
+
+            if(raw.isEmpty()) {
+                promise.completeExceptionally(NoSuchPageError("Page with id=$s not found"))
+                return@launch
+            }
+
             promise.complete(Page(raw[0]["title"] as String, raw[0]["content"] as String))
         }
 
