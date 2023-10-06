@@ -58,4 +58,12 @@ class SQLiteWikiRepository(private val databasePath: String) {
 
     }
 
+    fun updatePage(id: String, updated: Page) {
+        CoroutineScope(Dispatchers.IO).launch {
+            dao.update("UPDATE page SET title=?, content=? WHERE id=?",
+                    arrayOf(updated.title, updated.content, id)
+                )
+        }
+    }
+
 }

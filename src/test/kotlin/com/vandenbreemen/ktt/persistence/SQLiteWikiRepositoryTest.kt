@@ -53,4 +53,20 @@ class SQLiteWikiRepositoryTest() {
         }
     }
 
+    @Test
+    fun `should handle editing an existing page`()  = runTest{
+        val repo = SQLiteWikiRepository(filename)
+        val page = Page("First Stored Page", "This is a test of storing a page")
+        repo.createPage(page)
+        repo.loadPage("1").await()
+
+        val updated = Page("Updated First Page", "This is some updates to the first page")
+        repo.updatePage("1", updated)
+
+        repo.loadPage("1").await().run {
+            title shouldBeEqualTo "Updated First Page"
+            content shouldBeEqualTo "This is some updates to the first page"
+        }
+    }
+
 }
