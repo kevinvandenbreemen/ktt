@@ -8,6 +8,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -18,6 +19,7 @@ dependencies {
     val coroutine_test_version = "1.7.3"
     val kluent_version = "1.73"
     val sqlite_version = "3.43.0.0"
+    val sqlite_dao_version = "1.1.1.0000"
 
     implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("org.slf4j:slf4j-api:$slf4j_version")
@@ -26,6 +28,7 @@ dependencies {
 
     //  Persistence
     implementation("org.xerial:sqlite-jdbc:$sqlite_version")
+    implementation("com.github.kevinvandenbreemen:sqlite-dao:1.1.1.0000")
 
     //  Test Stuff
     testImplementation(kotlin("test"))
