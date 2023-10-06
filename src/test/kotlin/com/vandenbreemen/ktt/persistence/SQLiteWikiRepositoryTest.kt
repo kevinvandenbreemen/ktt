@@ -1,6 +1,8 @@
 package com.vandenbreemen.ktt.persistence
 
 import com.vandenbreemen.ktt.model.Page
+import kotlinx.coroutines.future.await
+import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -25,13 +27,13 @@ class SQLiteWikiRepositoryTest() {
     }
 
     @Test
-    fun `should store a page`() {
+    fun `should store a page`() = runTest{
         val repo = SQLiteWikiRepository(filename)
         val page = Page("First Stored Page", "This is a test of storing a page")
         repo.createPage(page)
         val retrieved = repo.loadPage("1")
 
-        retrieved.shouldBeEqualTo(page)
+        retrieved.await().shouldBeEqualTo(page)
     }
 
 }

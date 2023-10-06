@@ -3,7 +3,11 @@ package com.vandenbreemen.ktt.persistence
 import com.vandenbreemen.kevincommon.db.DatabaseSchema
 import com.vandenbreemen.kevincommon.db.SQLiteDAO
 import com.vandenbreemen.ktt.model.Page
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
+import java.util.concurrent.CompletableFuture
 
 class SQLiteWikiRepository(private val databasePath: String) {
 
@@ -26,15 +30,25 @@ class SQLiteWikiRepository(private val databasePath: String) {
         """.trimIndent())
     }
 
-    fun createPage(page: Page) {
-        dao.insert("INSERT INTO page(title, content) VALUES(?, ?)",
+    suspend fun createPage(page: Page) {
+        CoroutineScope(Dispatchers.IO).launch {
+            dao.insert("INSERT INTO page(title, content) VALUES(?, ?)",
                 arrayOf(page.title, page.content)
             )
+        }
     }
 
-    fun loadPage(s: String): Page {
-        val raw = dao.query("SELECT title, content FROM page WHERE id=?", arrayOf(s))
-        return Page(raw[0]["title"] as String, raw[0]["content"] as String)
+    suspend fun loadPage(s: String): CompletableFuture<Page> {
+
+        val promise = CompletableFuture<Page>()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val raw = dao.query("SELECT title, content FROM page WHERE id=?", arrayOf(s))
+            promise.complete(Page(raw[0]["title"] as String, raw[0]["content"] as String))
+        }
+
+        return promise
+
     }
 
 }
