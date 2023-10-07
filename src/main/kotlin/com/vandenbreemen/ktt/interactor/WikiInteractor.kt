@@ -1,5 +1,6 @@
 package com.vandenbreemen.ktt.interactor
 
+import com.vandenbreemen.ktt.message.UserError
 import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 
@@ -17,8 +18,21 @@ class WikiInteractor(private val testWikiInteractor: TestWikiInteractor, private
     }
 
     suspend fun updatePage(id: String, updatedPage: Page) {
-        //  TODO    Validation of page content
+        if(updatedPage.title.isBlank()) {
+            throw UserError("Please provide a title")
+        } else if (updatedPage.content.isBlank()) {
+            throw UserError("Please provide content for your page")
+        }
         repository.updatePage(id, updatedPage)
+    }
+
+    suspend fun createPage(page: Page) {
+        if(page.title.isBlank()) {
+            throw UserError("Please provide a title")
+        } else if (page.content.isBlank()) {
+            throw UserError("Please provide content for your page")
+        }
+        repository.createPage(page)
     }
 
 }
