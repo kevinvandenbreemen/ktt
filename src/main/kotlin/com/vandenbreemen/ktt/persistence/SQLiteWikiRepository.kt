@@ -4,11 +4,7 @@ import com.vandenbreemen.kevincommon.db.DatabaseSchema
 import com.vandenbreemen.kevincommon.db.SQLiteDAO
 import com.vandenbreemen.ktt.message.NoSuchPageError
 import com.vandenbreemen.ktt.model.Page
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
-import java.util.concurrent.CompletableFuture
 
 class SQLiteWikiRepository(private val databasePath: String) {
 
@@ -31,39 +27,28 @@ class SQLiteWikiRepository(private val databasePath: String) {
         """.trimIndent())
     }
 
-    fun createPage(page: Page) {
-        CoroutineScope(Dispatchers.IO).launch {
-            dao.insert("INSERT INTO page(title, content) VALUES(?, ?)",
-                arrayOf(page.title, page.content)
-            )
-        }
+    suspend fun createPage(page: Page) {
+        dao.insert("INSERT INTO page(title, content) VALUES(?, ?)",
+            arrayOf(page.title, page.content)
+        )
     }
 
-    fun loadPage(s: String): CompletableFuture<Page> {
+    suspend fun loadPage(s: String): Page {
 
-        val promise = CompletableFuture<Page>()
+        val raw = dao.query("SELECT title, content FROM page WHERE id=?", arrayOf(s))
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val raw = dao.query("SELECT title, content FROM page WHERE id=?", arrayOf(s))
-
-            if(raw.isEmpty()) {
-                promise.completeExceptionally(NoSuchPageError("Page with id=$s not found"))
-                return@launch
-            }
-
-            promise.complete(Page(raw[0]["title"] as String, raw[0]["content"] as String))
+        if(raw.isEmpty()) {
+            throw NoSuchPageError("Page with id=$s not found")
         }
 
-        return promise
+        return Page(raw[0]["title"] as String, raw[0]["content"] as String)
 
     }
 
     fun updatePage(id: String, updated: Page) {
-        CoroutineScope(Dispatchers.IO).launch {
-            dao.update("UPDATE page SET title=?, content=? WHERE id=?",
-                    arrayOf(updated.title, updated.content, id)
-                )
-        }
+        dao.update("UPDATE page SET title=?, content=? WHERE id=?",
+            arrayOf(updated.title, updated.content, id)
+        )
     }
 
 }

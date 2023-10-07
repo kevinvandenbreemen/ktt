@@ -2,7 +2,6 @@ package com.vandenbreemen.ktt.persistence
 
 import com.vandenbreemen.ktt.message.NoSuchPageError
 import com.vandenbreemen.ktt.model.Page
-import kotlinx.coroutines.future.await
 import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.fail
 import org.amshove.kluent.shouldBeEqualTo
@@ -33,9 +32,7 @@ class SQLiteWikiRepositoryTest() {
         val repo = SQLiteWikiRepository(filename)
         val page = Page("First Stored Page", "This is a test of storing a page")
         repo.createPage(page)
-        val retrieved = repo.loadPage("1")
-
-        retrieved.await().shouldBeEqualTo(page)
+        repo.loadPage("1").shouldBeEqualTo(page)
     }
 
     @Test
@@ -43,10 +40,9 @@ class SQLiteWikiRepositoryTest() {
         val repo = SQLiteWikiRepository(filename)
         val page = Page("First Stored Page", "This is a test of storing a page")
         repo.createPage(page)
-        val retrieved = repo.loadPage("2")
 
         try {
-            retrieved.await()
+            val retrieved = repo.loadPage("2")
             fail("Missing page should have raised an error")
         } catch (e: NoSuchPageError) {
             e.printStackTrace()
@@ -58,12 +54,12 @@ class SQLiteWikiRepositoryTest() {
         val repo = SQLiteWikiRepository(filename)
         val page = Page("First Stored Page", "This is a test of storing a page")
         repo.createPage(page)
-        repo.loadPage("1").await()
+        repo.loadPage("1")
 
         val updated = Page("Updated First Page", "This is some updates to the first page")
         repo.updatePage("1", updated)
 
-        repo.loadPage("1").await().run {
+        repo.loadPage("1").run {
             title shouldBeEqualTo "Updated First Page"
             content shouldBeEqualTo "This is some updates to the first page"
         }
