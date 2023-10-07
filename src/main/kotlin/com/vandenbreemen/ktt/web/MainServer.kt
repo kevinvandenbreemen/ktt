@@ -40,56 +40,72 @@ fun main(args: Array<String>) {
                 }
             }
 
-            get("/page/{pageId}") {
-                context.parameters["pageId"]?.let { pageId->
-                    interactor.fetchPage(pageId)?.let { page->
+            viewPage(interactor, renderingInteractor)
 
-                        context.respondText(contentType = ContentType.Text.Html) {
-                            StringBuilder().appendHTML().html {
-                                head {
-                                    style {
-                                        unsafe {
-                                            raw(css)
-                                        }
-                                    }
-                                }
-                                body {
-                                    div(classes = Classes.topSection) {
-                                        p {
-                                            +"Return Home"
-                                        }
-                                    }
-                                    div(classes = Classes.wikiEntry) {
-                                        this.htmlObject {
-                                            unsafe {
-                                                this.raw(
-                                                    renderingInteractor.render(page)
-                                                )
-                                            }
-                                        }
-                                    }
-                                    div(Classes.controlPanel) {
-                                        a {
-                                            accessKey = "e"
-                                            href = "/edit/$pageId"
-                                            +"EDIT"
-                                        }
-                                    }
-                                }
-                            }.toString()
-                        }
-                    } ?: run {
-                        context.respondText("Page not found",
-                            contentType = ContentType.Text.Html,
-                            status = HttpStatusCode(404, "No wiki page found with id $pageId"))
-                    }
-
-                }
-
-            }
+            editPage(interactor)
         }
     }.start(wait = true)
 
+}
+
+private fun Routing.editPage(interactor: WikiInteractor) {
+    get("/edit/{pageId}") {
+        context.parameters["pageId"]?.let { pageId ->
+            interactor.fetchPage(pageId)?.let { page ->
+
+                context.respondText(contentType = ContentType.Text.Html) {
+                    StringBuilder().appendHTML().html {
+                        head {
+                            style {
+                                unsafe {
+                                    raw(css)
+                                }
+                            }
+                        }
+
+                        body {
+                            div(classes = Classes.topSection) {
+                                p {
+                                    +"Return to Page"
+                                }
+                            }
+                            div(classes = Classes.editor) {
+                                form(action = "/edit/$pageId", method = FormMethod.post) {
+                                    input(name = "title", type = InputType.text) {
+                                        value = page.title
+                                    }
+                                    textArea(wrap = TextAreaWrap.soft) {
+                                        name = "content"
+                                        contentEditable = true
+                                        text(page.content)
+                                    }
+                                    div(classes = Classes.controlPanel) {
+                                        button(name = "submit", type = ButtonType.submit) {
+                                            accessKey = "s"
+                                            text("SAVE")
+                                        }
+                                        button(name = "cancel", type = ButtonType.button) {
+                                            onClick = "history.back()"
+                                            accessKey = "c"
+                                            text("CANCEL")
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }.toString()
+                }
+
+            } ?: run {
+                context.respondText(
+                    "Page not found",
+                    contentType = ContentType.Text.Html,
+                    status = HttpStatusCode(404, "No wiki page found with id $pageId")
+                )
+            }
+        }
+    }
 }
 
 private fun Routing.viewPage(
