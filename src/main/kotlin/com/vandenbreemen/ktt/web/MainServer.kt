@@ -3,11 +3,15 @@ package com.vandenbreemen.ktt.web
 import com.vandenbreemen.ktt.interactor.MarkdownInteractor
 import com.vandenbreemen.ktt.interactor.TestWikiInteractor
 import com.vandenbreemen.ktt.interactor.WikiInteractor
+import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
+import com.vandenbreemen.ktt.presenter.WikiPresenter
 import com.vandenbreemen.ktt.view.PageRenderingInteractor
 import io.ktor.http.*
+import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.html.*
@@ -18,8 +22,9 @@ fun main(args: Array<String>) {
 
     val logger = LoggerFactory.getLogger("MainServer")
 
-    val interactor = WikiInteractor(TestWikiInteractor(), SQLiteWikiRepository(("main.db")))
     val renderingInteractor = PageRenderingInteractor(MarkdownInteractor())
+
+    val presenter = WikiPresenter( WikiInteractor(TestWikiInteractor(), SQLiteWikiRepository(("main.db"))))
 
     embeddedServer(Netty, 8080) {
         routing {
@@ -40,18 +45,40 @@ fun main(args: Array<String>) {
                 }
             }
 
-            viewPage(interactor, renderingInteractor)
+            viewPage(presenter, renderingInteractor)
 
-            editPage(interactor)
+            editPage(presenter)
+
+            post("/edit/{pageId}") {
+                context.parameters["pageId"]?.let { pageId ->
+                    call.receiveParameters().let { params ->
+                        val title = params["title"]
+                        val content = params["content"]
+
+                        try {
+                            presenter.updatePage(pageId, Page(title ?: "", content ?: ""))
+                            call.respondRedirect("/page/$pageId")
+                        } catch (exception: Exception) {
+                            context.respondText(
+                                "Page not found",
+                                contentType = ContentType.Text.Html,
+                                status = HttpStatusCode(404, "No wiki page found with id $pageId")
+                            )
+                        }
+                    }
+                }
+
+            }
         }
     }.start(wait = true)
 
 }
 
-private fun Routing.editPage(interactor: WikiInteractor) {
+private fun Routing.editPage(presenter: WikiPresenter) {
     get("/edit/{pageId}") {
         context.parameters["pageId"]?.let { pageId ->
-            interactor.fetchPage(pageId)?.let { page ->
+            try {
+                val page = presenter.fetchPage(pageId)
 
                 context.respondText(contentType = ContentType.Text.Html) {
                     StringBuilder().appendHTML().html {
@@ -96,8 +123,7 @@ private fun Routing.editPage(interactor: WikiInteractor) {
                         }
                     }.toString()
                 }
-
-            } ?: run {
+            } catch (e: Exception) {
                 context.respondText(
                     "Page not found",
                     contentType = ContentType.Text.Html,
@@ -109,12 +135,13 @@ private fun Routing.editPage(interactor: WikiInteractor) {
 }
 
 private fun Routing.viewPage(
-    interactor: WikiInteractor,
+    presenter: WikiPresenter,
     renderingInteractor: PageRenderingInteractor
 ) {
     get("/page/{pageId}") {
         context.parameters["pageId"]?.let { pageId ->
-            interactor.fetchPage(pageId)?.let { page ->
+            try {
+                val page = presenter.fetchPage(pageId)
 
                 context.respondText(contentType = ContentType.Text.Html) {
                     StringBuilder().appendHTML().html {
@@ -150,7 +177,7 @@ private fun Routing.viewPage(
                         }
                     }.toString()
                 }
-            } ?: run {
+            } catch(e: Exception) {
                 context.respondText(
                     "Page not found",
                     contentType = ContentType.Text.Html,
