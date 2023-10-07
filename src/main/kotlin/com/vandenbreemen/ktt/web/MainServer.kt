@@ -91,3 +91,58 @@ fun main(args: Array<String>) {
     }.start(wait = true)
 
 }
+
+private fun Routing.viewPage(
+    interactor: WikiInteractor,
+    renderingInteractor: PageRenderingInteractor
+) {
+    get("/page/{pageId}") {
+        context.parameters["pageId"]?.let { pageId ->
+            interactor.fetchPage(pageId)?.let { page ->
+
+                context.respondText(contentType = ContentType.Text.Html) {
+                    StringBuilder().appendHTML().html {
+                        head {
+                            style {
+                                unsafe {
+                                    raw(css)
+                                }
+                            }
+                        }
+                        body {
+                            div(classes = Classes.topSection) {
+                                p {
+                                    +"Return Home"
+                                }
+                            }
+                            div(classes = Classes.wikiEntry) {
+                                this.htmlObject {
+                                    unsafe {
+                                        this.raw(
+                                            renderingInteractor.render(page)
+                                        )
+                                    }
+                                }
+                            }
+                            div(Classes.controlPanel) {
+                                a {
+                                    accessKey = "e"
+                                    href = "/edit/$pageId"
+                                    +"EDIT"
+                                }
+                            }
+                        }
+                    }.toString()
+                }
+            } ?: run {
+                context.respondText(
+                    "Page not found",
+                    contentType = ContentType.Text.Html,
+                    status = HttpStatusCode(404, "No wiki page found with id $pageId")
+                )
+            }
+
+        }
+
+    }
+}
