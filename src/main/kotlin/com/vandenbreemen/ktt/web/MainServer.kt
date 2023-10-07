@@ -47,12 +47,12 @@ fun main(args: Array<String>) {
                         context.respondText(contentType = ContentType.Text.Html) {
                             StringBuilder().appendHTML().html {
                                 body {
-                                    div {
+                                    div(classes = Classes.topSection) {
                                         p {
                                             +"Return Home"
                                         }
                                     }
-                                    div {
+                                    div(classes = Classes.wikiEntry) {
                                         this.htmlObject {
                                             unsafe {
                                                 this.raw(
@@ -62,6 +62,12 @@ fun main(args: Array<String>) {
 
                                         }
 
+                                    }
+                                    div(Classes.controlPanel) {
+                                        a {
+                                            href = "/edit/$pageId"
+
+                                        }
                                     }
                                 }
                             }.toString()
