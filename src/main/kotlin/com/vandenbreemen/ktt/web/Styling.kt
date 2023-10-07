@@ -5,3 +5,10 @@ object Classes {
     const val topSection = "top_section"
     const val wikiEntry = "wiki_entry"
 }
+
+const val css =
+"""
+.control_panel {
+    background-color: red;
+}
+"""

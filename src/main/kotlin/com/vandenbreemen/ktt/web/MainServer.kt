@@ -46,6 +46,13 @@ fun main(args: Array<String>) {
 
                         context.respondText(contentType = ContentType.Text.Html) {
                             StringBuilder().appendHTML().html {
+                                head {
+                                    style {
+                                        unsafe {
+                                            raw(css)
+                                        }
+                                    }
+                                }
                                 body {
                                     div(classes = Classes.topSection) {
                                         p {
@@ -59,14 +66,13 @@ fun main(args: Array<String>) {
                                                     renderingInteractor.render(page)
                                                 )
                                             }
-
                                         }
-
                                     }
                                     div(Classes.controlPanel) {
                                         a {
+                                            accessKey = "e"
                                             href = "/edit/$pageId"
-
+                                            +"EDIT"
                                         }
                                     }
                                 }
