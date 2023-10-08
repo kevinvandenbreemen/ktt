@@ -20,4 +20,8 @@ class WikiPresenter(private val wikiInteractor: WikiInteractor) {
         }
     }
 
+    suspend fun createPage(page: Page): Int {
+        return wikiInteractor.createPage(page)
+    }
+
 }

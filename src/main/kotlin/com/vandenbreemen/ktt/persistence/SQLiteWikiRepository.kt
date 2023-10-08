@@ -27,10 +27,14 @@ class SQLiteWikiRepository(private val databasePath: String) {
         """.trimIndent())
     }
 
-    suspend fun createPage(page: Page) {
+    fun createPage(page: Page): Int {
+
         dao.insert("INSERT INTO page(title, content) VALUES(?, ?)",
             arrayOf(page.title, page.content)
         )
+
+        val id = dao.query("SELECT max(id) as 'id' FROM page", emptyArray())[0]["id"]
+        return id as Int
     }
 
     suspend fun loadPage(s: String): Page {

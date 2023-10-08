@@ -26,13 +26,13 @@ class WikiInteractor(private val testWikiInteractor: TestWikiInteractor, private
         repository.updatePage(id, updatedPage)
     }
 
-    suspend fun createPage(page: Page) {
+    suspend fun createPage(page: Page): Int {
         if(page.title.isBlank()) {
             throw UserError("Please provide a title")
         } else if (page.content.isBlank()) {
             throw UserError("Please provide content for your page")
         }
-        repository.createPage(page)
+        return repository.createPage(page)
     }
 
 }

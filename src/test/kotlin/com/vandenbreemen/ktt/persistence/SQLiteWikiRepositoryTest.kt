@@ -36,6 +36,15 @@ class SQLiteWikiRepositoryTest() {
     }
 
     @Test
+    fun `should provide ID of last created page when creating a page`() = runTest{
+        val repo = SQLiteWikiRepository(filename)
+        val page = Page("First Stored Page", "This is a test of storing a page")
+        repo.createPage(page)
+        val id = repo.createPage(Page("another page", "its content"))
+        id shouldBeEqualTo 2
+    }
+
+    @Test
     fun `should handle no such page`() = runTest {
         val repo = SQLiteWikiRepository(filename)
         val page = Page("First Stored Page", "This is a test of storing a page")
