@@ -7,6 +7,8 @@ import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 import com.vandenbreemen.ktt.presenter.WikiPresenter
 import com.vandenbreemen.ktt.view.PageRenderingInteractor
+import com.vandenbreemen.ktt.view.PageRenderingPluginRegistry
+import com.vandenbreemen.ktt.view.plugins.PageLinkPlugin
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -21,9 +23,14 @@ import org.slf4j.LoggerFactory
 
 fun main(args: Array<String>) {
 
+    val registry = PageRenderingPluginRegistry().also {//  TODO    Make initialization and registration more formal
+        it.register(PageLinkPlugin())
+    }
+
+
     val logger = LoggerFactory.getLogger("MainServer")
 
-    val renderingInteractor = PageRenderingInteractor(MarkdownInteractor())
+    val renderingInteractor = PageRenderingInteractor(MarkdownInteractor(), registry)
 
     val presenter = WikiPresenter( WikiInteractor(TestWikiInteractor(), SQLiteWikiRepository(("main.db"))))
 
