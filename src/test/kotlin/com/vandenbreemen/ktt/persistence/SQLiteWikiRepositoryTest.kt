@@ -74,4 +74,18 @@ class SQLiteWikiRepositoryTest() {
         }
     }
 
+    @Test
+    fun `should prevent creating 2 pages with the same title`() {
+        val repo = SQLiteWikiRepository(filename)
+        val page = Page("First Stored Page", "This is a test of storing a page")
+        repo.createPage(page)
+
+        try {
+            repo.createPage(Page("First Stored Page", "some other page but with the same title"))
+            fail("Shouldn't allow creating pages with same title")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
 }

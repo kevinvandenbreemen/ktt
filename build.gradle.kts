@@ -19,7 +19,7 @@ dependencies {
     val coroutine_test_version = "1.7.3"
     val kluent_version = "1.73"
     val sqlite_version = "3.43.0.0"
-    val sqlite_dao_version = "1.1.1.0000"
+    val sqlite_dao_version = "1.1.2.0000"
     val kotlin_html_version = "0.9.1"
 
     implementation("io.ktor:ktor-server-netty:$ktor_version")
@@ -29,7 +29,7 @@ dependencies {
 
     //  Persistence
     implementation("org.xerial:sqlite-jdbc:$sqlite_version")
-    implementation("com.github.kevinvandenbreemen:sqlite-dao:1.1.1.0000")
+    implementation("com.github.kevinvandenbreemen:sqlite-dao:$sqlite_dao_version")
 
     //  HTML
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:$kotlin_html_version")

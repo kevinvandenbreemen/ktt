@@ -72,6 +72,20 @@ class WikiInteractorTest {
     }
 
     @Test
+    fun `should not allow updating page title to existing page title`() = runTest {
+
+        wikiInteractor.createPage(Page("Separate Page", "Some content"))
+
+        val edited = Page("Separate Page", "New Updates made")
+        try {
+            wikiInteractor.updatePage("1", edited)
+            fail("Should not let user edit the page to title that exists elsewhere")
+        } catch (e: UserError) {
+            e.printStackTrace()
+        }
+    }
+
+    @Test
     fun `should not create page if title or content not provided`() = runTest {
         try {
             wikiInteractor.createPage(Page("", "Content"))

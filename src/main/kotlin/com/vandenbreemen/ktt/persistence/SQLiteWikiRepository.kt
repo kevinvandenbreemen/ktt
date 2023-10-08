@@ -25,6 +25,10 @@ class SQLiteWikiRepository(private val databasePath: String) {
                 content TEXT NOT NULL
             )
         """.trimIndent())
+
+        schema.addDatabaseChange(2, """
+            CREATE UNIQUE INDEX uc_page_title ON page(title)
+        """.trimIndent())
     }
 
     fun createPage(page: Page): Int {
