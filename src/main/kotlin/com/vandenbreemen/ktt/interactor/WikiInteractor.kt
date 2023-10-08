@@ -17,7 +17,7 @@ class WikiInteractor(private val testWikiInteractor: TestWikiInteractor, private
         return repository.loadPage(id)
     }
 
-    suspend fun updatePage(id: String, updatedPage: Page) {
+    fun updatePage(id: String, updatedPage: Page) {
         if(updatedPage.title.isBlank()) {
             throw UserError("Please provide a title")
         } else if (updatedPage.content.isBlank()) {
