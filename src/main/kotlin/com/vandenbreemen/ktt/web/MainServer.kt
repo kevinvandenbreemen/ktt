@@ -49,29 +49,32 @@ fun main(args: Array<String>) {
 
             editPage(presenter)
 
-            post("/edit/{pageId}") {
-                context.parameters["pageId"]?.let { pageId ->
-                    call.receiveParameters().let { params ->
-                        val title = params["title"]
-                        val content = params["content"]
-
-                        try {
-                            presenter.updatePage(pageId, Page(title ?: "", content ?: ""))
-                            call.respondRedirect("/page/$pageId")
-                        } catch (exception: Exception) {
-                            context.respondText(
-                                "Page not found",
-                                contentType = ContentType.Text.Html,
-                                status = HttpStatusCode(404, "No wiki page found with id $pageId")
-                            )
-                        }
-                    }
-                }
-
-            }
+            submitPageEdit(presenter)
         }
     }.start(wait = true)
 
+}
+
+private fun Routing.submitPageEdit(presenter: WikiPresenter) {
+    post("/edit/{pageId}") {
+        context.parameters["pageId"]?.let { pageId ->
+            call.receiveParameters().let { params ->
+                val title = params["title"]
+                val content = params["content"]
+
+                try {
+                    presenter.updatePage(pageId, Page(title ?: "", content ?: ""))
+                    call.respondRedirect("/page/$pageId")
+                } catch (exception: Exception) {
+                    context.respondText(
+                        "Page not found",
+                        contentType = ContentType.Text.Html,
+                        status = HttpStatusCode(404, "No wiki page found with id $pageId")
+                    )
+                }
+            }
+        }
+    }
 }
 
 private fun Routing.editPage(presenter: WikiPresenter) {
