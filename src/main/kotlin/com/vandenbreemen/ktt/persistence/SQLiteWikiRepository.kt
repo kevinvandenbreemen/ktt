@@ -55,4 +55,15 @@ class SQLiteWikiRepository(private val databasePath: String) {
         )
     }
 
+    /**
+     * Find the page whose title matches the given string
+     */
+    fun searchPageByTitle(title: String): Int? {
+        val raw = dao.query("SELECT id FROM page WHERE title=?", arrayOf(title))
+        if(raw.isEmpty()) {
+            return null
+        }
+        return raw[0]["id"] as Int
+    }
+
 }

@@ -23,8 +23,10 @@ import org.slf4j.LoggerFactory
 
 fun main(args: Array<String>) {
 
+    val repository = SQLiteWikiRepository(("main.db"))
+
     val registry = PageRenderingPluginRegistry().also {//  TODO    Make initialization and registration more formal
-        it.register(PageLinkPlugin())
+        it.register(PageLinkPlugin(repository))
     }
 
 
@@ -32,7 +34,7 @@ fun main(args: Array<String>) {
 
     val renderingInteractor = PageRenderingInteractor(MarkdownInteractor(), registry)
 
-    val presenter = WikiPresenter( WikiInteractor(TestWikiInteractor(), SQLiteWikiRepository(("main.db"))))
+    val presenter = WikiPresenter( WikiInteractor(TestWikiInteractor(), repository))
 
     embeddedServer(Netty, 8080) {
         routing {
