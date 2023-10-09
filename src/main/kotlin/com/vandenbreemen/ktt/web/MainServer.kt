@@ -64,9 +64,98 @@ fun main(args: Array<String>) {
             submitCreatedPage(presenter, logger)
 
             createPage()
+
+            searchPage()
+
+            submitSearch(presenter)
         }
     }.start(wait = true)
 
+}
+
+private fun Routing.submitSearch(presenter: WikiPresenter) {
+    post("/search") {
+        call.receiveParameters().let { parameters ->
+            val searchTerm = parameters["searchTerm"] ?: ""
+
+            context.respondText(contentType = ContentType.Text.Html) {
+                StringBuilder().appendHTML().html {
+                    head {
+                        style {
+                            unsafe {
+                                raw(css)
+                            }
+                        }
+                    }
+                    body {
+                        div(classes = Classes.topSection) {
+                            a {
+                                onClick = "history.back()"
+                                +"Back"
+                            }
+                        }
+                        div(classes = Classes.resultsSection) {
+                            try {
+                                val result = presenter.searchPage(searchTerm)
+                                result.forEach { item ->
+                                    div(classes = Classes.item) {
+                                        a(href = "/page/${item.pageId}") {
+                                            +item.pageTitle
+                                        }
+                                    }
+                                }
+
+                            } catch (ex: Exception) {
+                                div(classes = Classes.errorSection) {
+                                    +(ex.message ?: "Unknown error")
+                                }
+                            }
+
+                        }
+                    }
+                }.toString()
+            }
+        }
+
+    }
+}
+
+private fun Routing.searchPage() {
+    get("/search") {
+        context.respondText(contentType = ContentType.Text.Html) {
+            StringBuilder().appendHTML().html {
+                head {
+                    style {
+                        unsafe {
+                            raw(css)
+                        }
+                    }
+                }
+
+                body {
+                    div(classes = Classes.topSection) {
+                        a {
+                            accessKey = "c"
+                            onClick = "history.back()"
+                            +"Back"
+                        }
+                    }
+                    div(classes = Classes.editor) {
+                        form(action = "/search", method = FormMethod.post) {
+                            input(name = "searchTerm", type = InputType.text) {
+                                autoFocus = true
+                            }
+                            button(name = "SEARCH", type = ButtonType.submit) {
+                                accessKey = "s"
+                                text("SEARCH")
+                            }
+                        }
+
+                    }
+                }
+            }.toString()
+        }
+    }
 }
 
 private fun Routing.createPage() {
@@ -262,6 +351,11 @@ private fun Routing.viewPage(
                                     accessKey = "e"
                                     href = "/edit/$pageId"
                                     +"EDIT"
+                                }
+                                a {
+                                    accessKey = "f"
+                                    href = "/search"
+                                    +"SEARCH"
                                 }
                             }
                         }

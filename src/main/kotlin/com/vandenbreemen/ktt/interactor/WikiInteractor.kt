@@ -2,6 +2,7 @@ package com.vandenbreemen.ktt.interactor
 
 import com.vandenbreemen.ktt.message.UserError
 import com.vandenbreemen.ktt.model.Page
+import com.vandenbreemen.ktt.model.PageSearchResult
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 
 class WikiInteractor(private val testWikiInteractor: TestWikiInteractor, private val repository: SQLiteWikiRepository) {
@@ -41,6 +42,17 @@ class WikiInteractor(private val testWikiInteractor: TestWikiInteractor, private
             throw UserError("There is another page with title '${page.title}' already in the system")
         }
         return repository.createPage(page)
+    }
+
+    /**
+     * Performs a search for pages by title/etc
+     */
+    fun search(searchTerm: String): List<PageSearchResult> {
+        if(searchTerm.isBlank()) {
+            throw UserError("Please provide a search term")
+        }
+
+        return repository.searchPages(searchTerm)
     }
 
 }

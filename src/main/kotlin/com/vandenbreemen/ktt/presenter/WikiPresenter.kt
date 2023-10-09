@@ -2,6 +2,7 @@ package com.vandenbreemen.ktt.presenter
 
 import com.vandenbreemen.ktt.interactor.WikiInteractor
 import com.vandenbreemen.ktt.model.Page
+import com.vandenbreemen.ktt.model.PageSearchResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,6 +23,14 @@ class WikiPresenter(private val wikiInteractor: WikiInteractor) {
 
     suspend fun createPage(page: Page): Int {
         return wikiInteractor.createPage(page)
+    }
+
+    fun searchPage(searchTerm: String): List<PageSearchResult> {
+        val result = wikiInteractor.search(searchTerm)
+        if(result.isEmpty()) {
+            throw Error("No results found matching '$searchTerm'")
+        }
+        return result
     }
 
 }
