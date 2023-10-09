@@ -88,4 +88,16 @@ class SQLiteWikiRepositoryTest() {
         }
     }
 
+    @Test
+    fun `should search pages by like`() {
+        val repo = SQLiteWikiRepository(filename)
+        repo.createPage(Page("First Stored Page", "This is a test of storing a page"))
+        repo.createPage(Page("Second Page", "the grass is full of hummingburds"))
+        repo.createPage(Page("Third Page", "there's a vast web of internets"))
+
+        val result = repo.searchPages("as")
+        result.size shouldBeEqualTo 2
+
+    }
+
 }

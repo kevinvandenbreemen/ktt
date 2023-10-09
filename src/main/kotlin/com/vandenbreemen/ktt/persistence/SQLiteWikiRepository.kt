@@ -4,6 +4,7 @@ import com.vandenbreemen.kevincommon.db.DatabaseSchema
 import com.vandenbreemen.kevincommon.db.SQLiteDAO
 import com.vandenbreemen.ktt.message.NoSuchPageError
 import com.vandenbreemen.ktt.model.Page
+import com.vandenbreemen.ktt.model.PageSearchResult
 import org.slf4j.LoggerFactory
 
 class SQLiteWikiRepository(private val databasePath: String) {
@@ -68,6 +69,14 @@ class SQLiteWikiRepository(private val databasePath: String) {
             return null
         }
         return raw[0]["id"] as Int
+    }
+
+    fun searchPages(searchTerms: String): List<PageSearchResult> {
+        val pattern = "%$searchTerms%"
+        val raw = dao.query("SELECT id, title, content FROM page WHERE title LIKE ? OR content LIKE ?", arrayOf(pattern, pattern))
+        return raw.map { row->
+            PageSearchResult(row["id"].toString(), row["title"] as String)
+        }
     }
 
 }
