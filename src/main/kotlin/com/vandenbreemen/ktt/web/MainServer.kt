@@ -158,51 +158,58 @@ private fun Routing.searchPage() {
     }
 }
 
+private fun buildEditor(title: String, existingPageContent: String?, pageId: String?): String {
+    return StringBuilder().appendHTML().html {
+        head {
+            style {
+                unsafe {
+                    raw(css)
+                }
+            }
+        }
+
+        body {
+            div(classes = Classes.topSection) {
+                p {
+                    +"Return to Page"
+                }
+            }
+            div(classes = Classes.editor) {
+                form(action = if(existingPageContent != null) "/edit/${pageId ?: ""}" else "/page/create", method = FormMethod.post) {
+                    input(name = "title", type = InputType.text) {
+                        value = title
+                    }
+                    textArea(wrap = TextAreaWrap.soft) {
+                        name = "content"
+                        contentEditable = true
+                        autoFocus = true
+                        existingPageContent?.let { content->
+                            text(content)
+                        }
+                    }
+                    div(classes = Classes.controlPanel) {
+                        button(name = "submit", type = ButtonType.submit) {
+                            accessKey = "s"
+                            text("SAVE")
+                        }
+                        button(name = "cancel", type = ButtonType.button) {
+                            onClick = "history.back()"
+                            accessKey = "c"
+                            text("CANCEL")
+                        }
+                    }
+                }
+
+            }
+        }
+    }.toString()
+}
+
 private fun Routing.createPage() {
     get("/page/create/{title}") {
         context.parameters["title"]?.let { title ->
             context.respondText(contentType = ContentType.Text.Html) {
-                StringBuilder().appendHTML().html {
-                    head {
-                        style {
-                            unsafe {
-                                raw(css)
-                            }
-                        }
-                    }
-
-                    body {
-                        div(classes = Classes.topSection) {
-                            p {
-                                +"Return to Page"
-                            }
-                        }
-                        div(classes = Classes.editor) {
-                            form(action = "/page/create", method = FormMethod.post) {
-                                input(name = "title", type = InputType.text) {
-                                    value = title
-                                }
-                                textArea(wrap = TextAreaWrap.soft) {
-                                    name = "content"
-                                    contentEditable = true
-                                    autoFocus = true
-                                }
-                                div(classes = Classes.controlPanel) {
-                                    button(name = "submit", type = ButtonType.submit) {
-                                        accessKey = "s"
-                                        text("SAVE")
-                                    }
-                                    button(name = "cancel", type = ButtonType.button) {
-                                        onClick = "history.back()"
-                                        accessKey = "c"
-                                        text("CANCEL")
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                }.toString()
+                buildEditor(title, null, null)
             }
         }
     }
@@ -261,48 +268,7 @@ private fun Routing.editPage(presenter: WikiPresenter) {
                 val page = presenter.fetchPage(pageId)
 
                 context.respondText(contentType = ContentType.Text.Html) {
-                    StringBuilder().appendHTML().html {
-                        head {
-                            style {
-                                unsafe {
-                                    raw(css)
-                                }
-                            }
-                        }
-
-                        body {
-                            div(classes = Classes.topSection) {
-                                p {
-                                    +"Return to Page"
-                                }
-                            }
-                            div(classes = Classes.editor) {
-                                form(action = "/edit/$pageId", method = FormMethod.post) {
-                                    input(name = "title", type = InputType.text) {
-                                        value = page.title
-                                    }
-                                    textArea(wrap = TextAreaWrap.soft) {
-                                        name = "content"
-                                        autoFocus = true
-                                        contentEditable = true
-                                        text(page.content)
-                                    }
-                                    div(classes = Classes.controlPanel) {
-                                        button(name = "submit", type = ButtonType.submit) {
-                                            accessKey = "s"
-                                            text("SAVE")
-                                        }
-                                        button(name = "cancel", type = ButtonType.button) {
-                                            onClick = "history.back()"
-                                            accessKey = "c"
-                                            text("CANCEL")
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
-                    }.toString()
+                    buildEditor(page.title, page.content, pageId)
                 }
             } catch (e: Exception) {
                 context.respondText(
