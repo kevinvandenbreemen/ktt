@@ -185,6 +185,7 @@ private fun Routing.createPage() {
                                 textArea(wrap = TextAreaWrap.soft) {
                                     name = "content"
                                     contentEditable = true
+                                    autoFocus = true
                                 }
                                 div(classes = Classes.controlPanel) {
                                     button(name = "submit", type = ButtonType.submit) {
@@ -282,6 +283,7 @@ private fun Routing.editPage(presenter: WikiPresenter) {
                                     }
                                     textArea(wrap = TextAreaWrap.soft) {
                                         name = "content"
+                                        autoFocus = true
                                         contentEditable = true
                                         text(page.content)
                                     }
