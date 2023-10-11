@@ -3,6 +3,7 @@ package com.vandenbreemen.ktt.web
 import com.vandenbreemen.ktt.interactor.MarkdownInteractor
 import com.vandenbreemen.ktt.interactor.TestWikiInteractor
 import com.vandenbreemen.ktt.interactor.WikiInteractor
+import com.vandenbreemen.ktt.interactor.WikiPageTagsInteractor
 import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 import com.vandenbreemen.ktt.presenter.WikiPresenter
@@ -34,7 +35,7 @@ fun main(args: Array<String>) {
 
     val renderingInteractor = PageRenderingInteractor(MarkdownInteractor(), registry)
 
-    val presenter = WikiPresenter( WikiInteractor(TestWikiInteractor(), repository))
+    val presenter = WikiPresenter( WikiInteractor(TestWikiInteractor(), repository), WikiPageTagsInteractor(repository))
 
     embeddedServer(Netty, 8080) {
         routing {
@@ -158,7 +159,7 @@ private fun Routing.searchPage() {
     }
 }
 
-private fun buildEditor(title: String, existingPageContent: String?, pageId: String?): String {
+private fun buildEditor(title: String, existingPageContent: String?, pageId: String?, existingPageTags: String = ""): String {
     return StringBuilder().appendHTML().html {
         head {
             style {
@@ -176,8 +177,20 @@ private fun buildEditor(title: String, existingPageContent: String?, pageId: Str
             }
             div(classes = Classes.editor) {
                 form(action = if(existingPageContent != null) "/edit/${pageId ?: ""}" else "/page/create", method = FormMethod.post) {
+                    h3 {
+                        +"Title"
+                    }
                     input(name = "title", type = InputType.text) {
                         value = title
+                    }
+                    h3 {
+                        +"Tags"
+                    }
+                    input(name="tags", type = InputType.text) {
+                        value = existingPageTags
+                    }
+                    h3 {
+                        +"Content"
                     }
                     textArea(wrap = TextAreaWrap.soft) {
                         name = "content"
@@ -223,9 +236,11 @@ private fun Routing.submitCreatedPage(
         call.receiveParameters().let { params ->
             val title = params["title"]
             val content = params["content"]
+            val tags = params["tags"] ?: ""
 
             try {
                 val pageId = presenter.createPage(Page(title ?: "", content ?: ""))
+                presenter.handlePageTags(pageId.toString(), tags)
                 call.respondRedirect("/page/$pageId")
             } catch (e: Exception) {
                 logger.error("Error occurred creating page", e)
@@ -245,9 +260,11 @@ private fun Routing.submitPageEdit(presenter: WikiPresenter) {
             call.receiveParameters().let { params ->
                 val title = params["title"]
                 val content = params["content"]
+                val tags = params["tags"] ?: ""
 
                 try {
                     presenter.updatePage(pageId, Page(title ?: "", content ?: ""))
+                    presenter.handlePageTags(pageId, tags)
                     call.respondRedirect("/page/$pageId")
                 } catch (exception: Exception) {
                     context.respondText(
@@ -266,9 +283,10 @@ private fun Routing.editPage(presenter: WikiPresenter) {
         context.parameters["pageId"]?.let { pageId ->
             try {
                 val page = presenter.fetchPage(pageId)
+                val tags = presenter.getTags(pageId)
 
                 context.respondText(contentType = ContentType.Text.Html) {
-                    buildEditor(page.title, page.content, pageId)
+                    buildEditor(page.title, page.content, pageId, tags)
                 }
             } catch (e: Exception) {
                 context.respondText(

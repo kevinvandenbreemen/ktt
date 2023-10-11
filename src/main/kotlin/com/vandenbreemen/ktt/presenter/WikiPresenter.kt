@@ -38,4 +38,8 @@ class WikiPresenter(private val wikiInteractor: WikiInteractor, private val page
         pageTagsInteractor.addUpdatePageTags(pageId, rawTagsString)
     }
 
+    fun getTags(pageId: String): String {
+        return pageTagsInteractor.getTags(pageId)
+    }
+
 }
