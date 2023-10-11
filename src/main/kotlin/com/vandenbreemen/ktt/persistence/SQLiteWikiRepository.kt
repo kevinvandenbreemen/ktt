@@ -6,12 +6,19 @@ import com.vandenbreemen.ktt.message.NoSuchPageError
 import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.model.PageSearchResult
 import org.slf4j.LoggerFactory
+import java.util.concurrent.ConcurrentHashMap
 
 class SQLiteWikiRepository(private val databasePath: String) {
 
     private val logger = LoggerFactory.getLogger(SQLiteWikiRepository::class.java)
 
     private val dao = SQLiteDAO(databasePath)
+
+    /**
+     * Tag ID cache
+     */
+    private val tagIds = ConcurrentHashMap<String, Int>()
+
 
     init {
         initializeDatabase()
@@ -29,6 +36,24 @@ class SQLiteWikiRepository(private val databasePath: String) {
 
         schema.addDatabaseChange(2, """
             CREATE UNIQUE INDEX uc_page_title ON page(title)
+        """.trimIndent())
+
+        schema.addDatabaseChange(3, """
+            CREATE TABLE tag(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL
+            );
+            
+            CREATE UNIQUE INDEX uc_tag_name ON tag(name);
+            
+            CREATE TABLE page_tag(
+                pageId INTEGER NOT NULL,
+                tagId INTEGER NOT NULL,
+                CONSTRAINT fk_tag_pageid FOREIGN KEY(pageId) REFERENCES page(id) ON DELETE CASCADE,
+                CONSTRAINT fk_tag_tagid FOREIGN KEY(tagId) REFERENCES tag(id) ON DELETE CASCADE
+            );
+            
+            CREATE UNIQUE INDEX uc_page_tag ON page_tag(pageId, tagId);
         """.trimIndent())
     }
 
@@ -76,6 +101,26 @@ class SQLiteWikiRepository(private val databasePath: String) {
         val raw = dao.query("SELECT id, title, content FROM page WHERE title LIKE ? OR content LIKE ?", arrayOf(pattern, pattern))
         return raw.map { row->
             PageSearchResult(row["id"].toString(), row["title"] as String)
+        }
+    }
+
+    fun addTag(tag: String) {
+        dao.insert("INSERT INTO tag(name) SELECT ? WHERE NOT EXISTS (SELECT 1 FROM tag WHERE name=?)", arrayOf(tag, tag))
+    }
+
+    fun assignPageTag(pageId: String, tagName: String) {
+        addTag(tagName)
+        val tagId = tagIds[tagName] ?: run {
+            val tagId = dao.query("SELECT id FROM tag WHERE name=?", arrayOf(tagName))[0]["id"] as Int
+            tagIds[tagName] = tagId
+            tagId
+        }
+        dao.insert("INSERT OR IGNORE INTO page_tag(pageId, tagId) VALUES (?, ?)", arrayOf(pageId, tagId))
+    }
+
+    fun getPageTags(pageId: String): List<String> {
+        return dao.query("SELECT name FROM tag WHERE id IN (SELECT tagId FROM page_tag WHERE pageId=?)", arrayOf(pageId)).map { row->
+            row["name"] as String
         }
     }
 
