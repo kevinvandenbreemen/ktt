@@ -100,4 +100,20 @@ class SQLiteWikiRepositoryTest() {
 
     }
 
+    @Test
+    fun `should include page tags in searches`() {
+        val repo = SQLiteWikiRepository(filename)
+        repo.createPage(Page("First Stored Page", "This is a test of storing a page"))
+        repo.createPage(Page("Second Page", "the grass is full of hummingburds"))
+        repo.createPage(Page("Third Page", "there's a vast web of internets"))
+
+
+        repo.assignPageTag("1", "buzzard")
+
+        val result = repo.searchPages("buzzard")
+        result.size shouldBeEqualTo 1
+
+        result[0].pageTitle shouldBeEqualTo "First Stored Page"
+    }
+
 }

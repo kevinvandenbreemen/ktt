@@ -98,7 +98,7 @@ class SQLiteWikiRepository(private val databasePath: String) {
 
     fun searchPages(searchTerms: String): List<PageSearchResult> {
         val pattern = "%$searchTerms%"
-        val raw = dao.query("SELECT id, title, content FROM page WHERE title LIKE ? OR content LIKE ?", arrayOf(pattern, pattern))
+        val raw = dao.query("SELECT id, title, content FROM page WHERE title LIKE ? OR content LIKE ? OR id IN (select pageId FROM page_tag WHERE tagId IN (SELECT id FROM tag WHERE name LIKE ?))", arrayOf(pattern, pattern, pattern))
         return raw.map { row->
             PageSearchResult(row["id"].toString(), row["title"] as String)
         }
