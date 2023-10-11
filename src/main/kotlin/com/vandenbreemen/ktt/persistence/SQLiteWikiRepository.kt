@@ -108,6 +108,10 @@ class SQLiteWikiRepository(private val databasePath: String) {
         dao.insert("INSERT INTO tag(name) SELECT ? WHERE NOT EXISTS (SELECT 1 FROM tag WHERE name=?)", arrayOf(tag, tag))
     }
 
+    fun removeTagsForPage(pageId: String) {
+        dao.delete("DELETE FROM page_tag WHERE pageId=?", arrayOf(pageId))
+    }
+
     fun assignPageTag(pageId: String, tagName: String) {
         addTag(tagName)
         val tagId = tagIds[tagName] ?: run {

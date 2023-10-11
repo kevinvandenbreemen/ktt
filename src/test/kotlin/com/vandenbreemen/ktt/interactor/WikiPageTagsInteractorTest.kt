@@ -36,4 +36,13 @@ class WikiPageTagsInteractorTest {
         val tags = wikiPageTagsInteractor.getTags(pageId.toString())
         tags shouldBeEqualTo "tag1, tag2, tag3"
     }
+
+    @Test
+    fun `should handle removing tags from a page`() = runTest{
+        val pageId = wikiInteractor.createPage(Page("Test", "Test creating tags"))
+        wikiPageTagsInteractor.addUpdatePageTags(pageId.toString(), "tag1, tag2, tag3")
+        wikiPageTagsInteractor.addUpdatePageTags(pageId.toString(), "tag1, tag2")
+        val tags = wikiPageTagsInteractor.getTags(pageId.toString())
+        tags shouldBeEqualTo "tag1, tag2"
+    }
 }

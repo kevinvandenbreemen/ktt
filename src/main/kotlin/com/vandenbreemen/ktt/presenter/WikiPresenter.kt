@@ -1,13 +1,14 @@
 package com.vandenbreemen.ktt.presenter
 
 import com.vandenbreemen.ktt.interactor.WikiInteractor
+import com.vandenbreemen.ktt.interactor.WikiPageTagsInteractor
 import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.model.PageSearchResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class WikiPresenter(private val wikiInteractor: WikiInteractor) {
+class WikiPresenter(private val wikiInteractor: WikiInteractor, private val pageTagsInteractor: WikiPageTagsInteractor) {
 
     private val dispatcher = Dispatchers.IO
 
@@ -31,6 +32,10 @@ class WikiPresenter(private val wikiInteractor: WikiInteractor) {
             throw Error("No results found matching '$searchTerm'")
         }
         return result
+    }
+
+    fun handlePageTags(pageId: String, rawTagsString: String) {
+        pageTagsInteractor.addUpdatePageTags(pageId, rawTagsString)
     }
 
 }

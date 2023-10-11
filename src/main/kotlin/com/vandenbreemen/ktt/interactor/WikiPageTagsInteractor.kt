@@ -6,6 +6,7 @@ class WikiPageTagsInteractor(private val repository: SQLiteWikiRepository) {
 
     fun addUpdatePageTags(pageId: String, tagsString: String) {
         val tags = tagsString.split("[\\s]*[,][\\s]*".toRegex())
+        repository.removeTagsForPage(pageId)
         tags.forEach { tag->
             repository.assignPageTag(pageId, tag)
         }
