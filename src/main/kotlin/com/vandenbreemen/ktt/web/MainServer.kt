@@ -307,6 +307,7 @@ private fun Routing.viewPage(
         context.parameters["pageId"]?.let { pageId ->
             try {
                 val page = presenter.fetchPage(pageId)
+                presenter.onViewPage(pageId, page)
 
                 context.respondText(contentType = ContentType.Text.Html) {
                     StringBuilder().appendHTML().html {
