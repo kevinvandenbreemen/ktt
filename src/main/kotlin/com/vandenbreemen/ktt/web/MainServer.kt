@@ -324,6 +324,18 @@ private fun Routing.viewPage(
                                     +"Return Home"
                                 }
                             }
+                            presenter.breadcrumbTrail.run {
+                                if(!isEmpty()) {
+                                    div(classes = Classes.breadcrumbs) {
+                                        forEach { breadcrumb->
+                                            a {
+                                                href="/page/${breadcrumb.pageId}"
+                                                +"${breadcrumb.title} >> "
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             div(classes = Classes.wikiEntry) {
                                 this.htmlObject {
                                     unsafe {

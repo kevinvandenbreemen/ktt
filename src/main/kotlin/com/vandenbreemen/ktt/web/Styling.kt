@@ -1,6 +1,7 @@
 package com.vandenbreemen.ktt.web
 
 object Classes {
+    const val breadcrumbs = "breadcrumb_bar"
     const val editor = "editor_section"
     const val controlPanel = "control_panel"
     const val topSection = "top_section"
