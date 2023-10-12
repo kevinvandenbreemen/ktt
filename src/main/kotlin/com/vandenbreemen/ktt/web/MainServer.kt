@@ -170,11 +170,6 @@ private fun buildEditor(title: String, existingPageContent: String?, pageId: Str
         }
 
         body {
-            div(classes = Classes.topSection) {
-                p {
-                    +"Return to Page"
-                }
-            }
             div(classes = Classes.editor) {
                 form(action = if(existingPageContent != null) "/edit/${pageId ?: ""}" else "/page/create", method = FormMethod.post) {
                     h3 {
@@ -319,11 +314,6 @@ private fun Routing.viewPage(
                             }
                         }
                         body {
-                            div(classes = Classes.topSection) {
-                                p {
-                                    +"Return Home"
-                                }
-                            }
                             presenter.breadcrumbTrail.run {
                                 if(!isEmpty()) {
                                     div(classes = Classes.breadcrumbs) {
