@@ -16,6 +16,17 @@ class BreadcrumbsInteractor {
                 return
             }
         }
+
+        //  Don't allow loops of breadcrumb items
+        breadcrumbTrail.indexOfFirst { existingItem->existingItem.pageId == pageId }.let { index->
+            if(index >= 0) {
+                val newList = breadcrumbTrail.slice(0 .. index)
+                breadcrumbTrail.clear()
+                breadcrumbTrail.addAll(newList)
+                return
+            }
+        }
+
         breadcrumbTrail.add(PageBreadcrumbItem(pageId, page.title))
     }
 

@@ -58,4 +58,26 @@ class WikiPresenterTest {
         }
     }
 
+    @Test
+    fun `should prevent loops of visited pages`() {
+        wikiPresenter.onViewPage("1", Page("page 1", "Content 1"))
+        wikiPresenter.onViewPage("2", Page("page 2", "Content 2"))
+        wikiPresenter.onViewPage("3", Page("page 3", "Content 2"))
+
+        wikiPresenter.breadcrumbTrail.let {
+            it.size shouldBeEqualTo 3
+            it[0] shouldBeEqualTo PageBreadcrumbItem("1", "page 1")
+            it[1] shouldBeEqualTo PageBreadcrumbItem("2", "page 2")
+            it[2] shouldBeEqualTo PageBreadcrumbItem("3", "page 3")
+        }
+
+        wikiPresenter.onViewPage("2", Page("page 2", "Content 2"))
+
+        wikiPresenter.breadcrumbTrail.let {
+            it.size shouldBeEqualTo 2
+            it[0] shouldBeEqualTo PageBreadcrumbItem("1", "page 1")
+            it[1] shouldBeEqualTo PageBreadcrumbItem("2", "page 2")
+        }
+    }
+
 }
