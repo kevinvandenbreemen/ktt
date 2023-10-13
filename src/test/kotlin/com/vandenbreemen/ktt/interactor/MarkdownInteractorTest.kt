@@ -48,4 +48,18 @@ I think I will use it in my next project.
         html shouldBeEqualTo "<body><p>I like markdown.</p><p>I think I will use it in my next project.</p></body>"
     }
 
+    @Test
+    fun `should handle text with return carriages and newlines`() {
+
+        val interactor = MarkdownInteractor()
+
+        val text = "I really like using Markdown.\r\n\r\nI think I will use it in my next project."
+        repo.createPage(Page("test", text))
+        val loaded = repo.loadPage("1")
+
+        val html = interactor.translateToHtml(loaded.content)
+
+        html shouldBeEqualTo "<body><p>I really like using Markdown.</p><p>I think I will use it in my next project.</p></body>"
+    }
+
 }
