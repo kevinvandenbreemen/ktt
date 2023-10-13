@@ -177,6 +177,7 @@ private fun buildEditor(title: String, existingPageContent: String?, pageId: Str
                     }
                     input(name = "title", type = InputType.text) {
                         value = title
+                        readonly=true
                     }
                     h3 {
                         +"Tags"
