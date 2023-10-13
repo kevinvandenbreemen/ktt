@@ -23,6 +23,8 @@ import kotlinx.html.stream.appendHTML
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+val logger = LoggerFactory.getLogger("MainServer")
+
 fun main(args: Array<String>) {
 
     val repository = SQLiteWikiRepository(("main.db"))
@@ -30,9 +32,6 @@ fun main(args: Array<String>) {
     val registry = PageRenderingPluginRegistry().also {//  TODO    Make initialization and registration more formal
         it.register(PageLinkPlugin(repository))
     }
-
-
-    val logger = LoggerFactory.getLogger("MainServer")
 
     val renderingInteractor = PageRenderingInteractor(MarkdownInteractor(), registry)
 
@@ -212,7 +211,7 @@ private fun buildEditor(title: String, existingPageContent: String?, pageId: Str
                     h3 {
                         +"Content"
                     }
-                    textArea(wrap = TextAreaWrap.soft) {
+                    textArea(wrap = TextAreaWrap.hard) {
                         name = "content"
                         contentEditable = true
                         autoFocus = true
