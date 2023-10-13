@@ -10,7 +10,7 @@ class WikiInteractor(private val testWikiInteractor: TestWikiInteractor, private
     /**
      * fetch the page with the given ID
      */
-    suspend fun fetchPage(id: String): Page {
+    fun fetchPage(id: String): Page {
         if(testWikiInteractor.isTestID(id)) {
             return testWikiInteractor.getTestWiki()
         }

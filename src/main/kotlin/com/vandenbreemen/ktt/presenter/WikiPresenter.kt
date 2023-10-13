@@ -17,7 +17,7 @@ class WikiPresenter(private val wikiInteractor: WikiInteractor, private val page
     val breadcrumbTrail: List<PageBreadcrumbItem> get() = breadcrumbsInteractor.getBreadcrumbTrail()
     private val dispatcher = Dispatchers.IO
 
-    suspend fun fetchPage(pageId: String): Page {
+    fun fetchPage(pageId: String): Page {
         return wikiInteractor.fetchPage(pageId)
     }
 

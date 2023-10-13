@@ -4,6 +4,7 @@ import com.vandenbreemen.ktt.interactor.MarkdownInteractor
 import com.vandenbreemen.ktt.interactor.TestWikiInteractor
 import com.vandenbreemen.ktt.interactor.WikiInteractor
 import com.vandenbreemen.ktt.interactor.WikiPageTagsInteractor
+import com.vandenbreemen.ktt.message.NoSuchPageError
 import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 import com.vandenbreemen.ktt.presenter.WikiPresenter
@@ -39,22 +40,7 @@ fun main(args: Array<String>) {
 
     embeddedServer(Netty, 8080) {
         routing {
-            get("/") {
-                this.context.respondText(contentType = ContentType.Text.Html) {
-                    return@respondText StringBuilder().appendHTML().html {
-                        body {
-                            div {
-                                h1 {
-                                    +"Main Home Page"
-                                }
-                                p {
-                                    +"To view a wiki page try path /page/[id]"
-                                }
-                            }
-                        }
-                    }.toString()
-                }
-            }
+            mainPage(presenter)
 
             viewPage(presenter, renderingInteractor)
 
@@ -72,6 +58,44 @@ fun main(args: Array<String>) {
         }
     }.start(wait = true)
 
+}
+
+private fun Routing.mainPage(presenter: WikiPresenter) {
+    get("/") {
+        this.context.respondText(contentType = ContentType.Text.Html) {
+            return@respondText StringBuilder().appendHTML().html {
+                head {
+                    style {
+                        unsafe {
+                            raw(css)
+                        }
+                    }
+                }
+                body {
+                    div {
+                        h1 {
+                            +"Welcome Back"
+                        }
+                        p {
+                            +"This is your personal wiki.  You can use it to store information etc.  Enough from me, why not head on over to your main page?"
+                        }
+                        h2 {
+                            try {
+                                val firstPage = presenter.fetchPage("1")
+                                a(href = "/page/1") {
+                                    +"${firstPage.title}"
+                                }
+                            } catch (pnf: NoSuchPageError) {
+                                a(href = "/page/create/Main Page") {
+                                    +"Create your first page"
+                                }
+                            }
+                        }
+                    }
+                }
+            }.toString()
+        }
+    }
 }
 
 private fun Routing.submitSearch(presenter: WikiPresenter) {

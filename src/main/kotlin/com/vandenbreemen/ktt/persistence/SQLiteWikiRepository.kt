@@ -67,7 +67,7 @@ class SQLiteWikiRepository(private val databasePath: String) {
         return id as Int
     }
 
-    suspend fun loadPage(s: String): Page {
+    fun loadPage(s: String): Page {
 
         val raw = dao.query("SELECT title, content FROM page WHERE id=?", arrayOf(s))
 
