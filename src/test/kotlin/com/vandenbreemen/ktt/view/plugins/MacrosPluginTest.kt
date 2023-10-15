@@ -23,7 +23,7 @@ class MacrosPluginTest {
 
     @BeforeEach
     fun setup() {
-        registry.registerMacro(HelloWorldTestMacro())
+        registry.register(HelloWorldTestMacro())
     }
 
     @Test

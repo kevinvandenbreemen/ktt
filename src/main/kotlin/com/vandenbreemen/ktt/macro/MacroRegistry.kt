@@ -7,7 +7,7 @@ class MacroRegistry {
 
     private val macrosByName = mutableMapOf<String, Macro>()
 
-    fun registerMacro(macro: Macro) {
+    fun register(macro: Macro) {
         macrosByName[macro.name] = macro
     }
 

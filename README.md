@@ -35,4 +35,10 @@ Arguments are provided using values specified with quotes, as in:
 At the moment I'd rather have an instantly recognizable prefix in the curly brace to allow me to put other things into this wiki software that involve curly braces...
 
 ### Adding Macros to the server
-Macros should be added via a registry.  
+Macros can be added via the macro registry, like this:
+
+```
+WikiApplication.macroRegistry.register(myMacro)
+```
+
+Your ```myMacro``` object will need to be of a type that implements the ```Macro``` interface.

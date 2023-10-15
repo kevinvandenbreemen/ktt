@@ -4,6 +4,7 @@ import com.vandenbreemen.ktt.interactor.MarkdownInteractor
 import com.vandenbreemen.ktt.interactor.TestWikiInteractor
 import com.vandenbreemen.ktt.interactor.WikiInteractor
 import com.vandenbreemen.ktt.interactor.WikiPageTagsInteractor
+import com.vandenbreemen.ktt.macro.AboutMacro
 import com.vandenbreemen.ktt.main.WikiApplication
 import com.vandenbreemen.ktt.message.NoSuchPageError
 import com.vandenbreemen.ktt.model.Page
@@ -26,6 +27,8 @@ import org.slf4j.LoggerFactory
 val logger = LoggerFactory.getLogger("MainServer")
 
 fun startServer() {
+
+    WikiApplication.macroRegistry.register(AboutMacro())
 
     val repository = SQLiteWikiRepository(("main.db"))
 
