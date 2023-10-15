@@ -1,19 +1,6 @@
-
-# Libraries Used
-## ktt
-Repo to try out some development using ktor for Kotlin server-side coding
-
-## Info on KTOR
-* https://github.com/ktorio/ktor
-* https://ktor.io/docs/welcome.html
-
-## Info on SQLite
-* https://github.com/xerial/sqlite-jdbc/tree/master
-* https://github.com/xerial/sqlite-jdbc/blob/master/USAGE.md
-* https://github.com/kevinvandenbreemen/sqlite-dao
-
-## Info on Kotlinx.HTML
-* https://github.com/Kotlin/kotlinx.html/wiki/
+# Getting Started
+## Up and Running
+You can start the wiki by running the ```WikiApplication``` class.  The server will start on port 8080.  Data will be stored in database file main.db in the same directory.
 
 # Main Features
 ## Macros
@@ -42,3 +29,20 @@ WikiApplication.macroRegistry.register(myMacro)
 ```
 
 Your ```myMacro``` object will need to be of a type that implements the ```Macro``` interface.
+
+
+# Libraries Used
+## ktt
+Repo to try out some development using ktor for Kotlin server-side coding
+
+## Info on KTOR
+* https://github.com/ktorio/ktor
+* https://ktor.io/docs/welcome.html
+
+## Info on SQLite
+* https://github.com/xerial/sqlite-jdbc/tree/master
+* https://github.com/xerial/sqlite-jdbc/blob/master/USAGE.md
+* https://github.com/kevinvandenbreemen/sqlite-dao
+
+## Info on Kotlinx.HTML
+* https://github.com/Kotlin/kotlinx.html/wiki/
