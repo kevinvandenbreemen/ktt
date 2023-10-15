@@ -4,12 +4,12 @@ import com.vandenbreemen.ktt.interactor.MarkdownInteractor
 import com.vandenbreemen.ktt.interactor.TestWikiInteractor
 import com.vandenbreemen.ktt.interactor.WikiInteractor
 import com.vandenbreemen.ktt.interactor.WikiPageTagsInteractor
+import com.vandenbreemen.ktt.main.WikiApplication
 import com.vandenbreemen.ktt.message.NoSuchPageError
 import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 import com.vandenbreemen.ktt.presenter.WikiPresenter
 import com.vandenbreemen.ktt.view.PageRenderingInteractor
-import com.vandenbreemen.ktt.view.PageRenderingPluginRegistry
 import com.vandenbreemen.ktt.view.plugins.PageLinkPlugin
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -25,15 +25,12 @@ import org.slf4j.LoggerFactory
 
 val logger = LoggerFactory.getLogger("MainServer")
 
-fun main(args: Array<String>) {
+fun startServer() {
 
     val repository = SQLiteWikiRepository(("main.db"))
 
-    val registry = PageRenderingPluginRegistry().also {//  TODO    Make initialization and registration more formal
-        it.register(PageLinkPlugin(repository))
-    }
-
-    val renderingInteractor = PageRenderingInteractor(MarkdownInteractor(), registry)
+    WikiApplication.pageRenderingPluginRegistry.register(PageLinkPlugin(repository))
+    val renderingInteractor = PageRenderingInteractor(MarkdownInteractor(), WikiApplication.pageRenderingPluginRegistry)
 
     val presenter = WikiPresenter( WikiInteractor(TestWikiInteractor(), repository), WikiPageTagsInteractor(repository))
 
