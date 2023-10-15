@@ -33,3 +33,6 @@ Arguments are provided using values specified with quotes, as in:
 
 ### Why have a prefix etc when other wikis just have a curly brace and macro name?
 At the moment I'd rather have an instantly recognizable prefix in the curly brace to allow me to put other things into this wiki software that involve curly braces...
+
+### Adding Macros to the server
+Macros should be added via a registry.  
