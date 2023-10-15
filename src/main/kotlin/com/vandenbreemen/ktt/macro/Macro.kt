@@ -7,4 +7,8 @@ interface Macro {
 
     val name: String
 
+    /**
+     * Execute with the parameters, returning content as a string.  Content should be in markdown
+     */
+    fun execute(args: Map<String, String>): String
 }
