@@ -46,3 +46,8 @@ Repo to try out some development using ktor for Kotlin server-side coding
 
 ## Info on Kotlinx.HTML
 * https://github.com/Kotlin/kotlinx.html/wiki/
+
+# Future Feature Ideas
+## CSS stored in the database
+* Right now the css is just hard-coded in the ```Styling``` class.  
+* Provide a way of letting the user enter their own CSS on a page in the wiki that then styles the wiki.
