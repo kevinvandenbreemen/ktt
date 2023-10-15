@@ -15,7 +15,7 @@ Repo to try out some development using ktor for Kotlin server-side coding
 ## Info on Kotlinx.HTML
 * https://github.com/Kotlin/kotlinx.html/wiki/
 
-# Planned Features
+# Main Features
 ## Macros
 Macros will provide a syntax that looks as follows:
 ```
