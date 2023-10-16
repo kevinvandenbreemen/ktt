@@ -4,7 +4,6 @@ import com.vandenbreemen.ktt.message.UserError
 import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.`should not be null`
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.AfterEach
@@ -31,13 +30,13 @@ class WikiInteractorTest {
     }
 
     @Test
-    fun `should delegate to the test wiki interactor when test page is requested`() = runTest {
+    fun `should delegate to the test wiki interactor when test page is requested`()  {
         val page = wikiInteractor.fetchPage("test")
         page.`should not be null`()
     }
 
     @Test
-    fun `should prevent editing a page with no title`() = runTest{
+    fun `should prevent editing a page with no title`() {
         val edited = Page("", "Page without a title")
         try {
             wikiInteractor.updatePage("1", edited)
@@ -48,7 +47,7 @@ class WikiInteractorTest {
     }
 
     @Test
-    fun `should prevent editing a page with no content`() = runTest {
+    fun `should prevent editing a page with no content`()  {
         val edited = Page("Test Page", "")
         try {
             wikiInteractor.updatePage("1", edited)
@@ -59,7 +58,7 @@ class WikiInteractorTest {
     }
 
     @Test
-    fun `should update page`() = runTest {
+    fun `should update page`()  {
         val edited = Page("Updated Page", "New Updates made")
         try {
             wikiInteractor.updatePage("1", edited)
@@ -72,7 +71,7 @@ class WikiInteractorTest {
     }
 
     @Test
-    fun `should not allow updating page title to existing page title`() = runTest {
+    fun `should not allow updating page title to existing page title`()  {
 
         wikiInteractor.createPage(Page("Separate Page", "Some content"))
 
@@ -86,7 +85,7 @@ class WikiInteractorTest {
     }
 
     @Test
-    fun `should not create page if title or content not provided`() = runTest {
+    fun `should not create page if title or content not provided`()  {
         try {
             wikiInteractor.createPage(Page("", "Content"))
             fail("Should not create if no title")

@@ -2,7 +2,6 @@ package com.vandenbreemen.ktt.interactor
 
 import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
-import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -21,7 +20,7 @@ class WikiPageTagsInteractorTest {
     }
 
     @Test
-    fun `should assign tags to a page`()  = runTest{
+    fun `should assign tags to a page`()  {
         val pageId = wikiInteractor.createPage(Page("Test", "Test creating tags"))
         wikiPageTagsInteractor.addUpdatePageTags(pageId.toString(), "tag1, tag2, tag3")
         val tags = wikiPageTagsInteractor.getTags(pageId.toString())
@@ -29,7 +28,7 @@ class WikiPageTagsInteractorTest {
     }
 
     @Test
-    fun `should handle writing same tag twice to a page`() = runTest {
+    fun `should handle writing same tag twice to a page`()  {
         val pageId = wikiInteractor.createPage(Page("Test", "Test creating tags"))
         wikiPageTagsInteractor.addUpdatePageTags(pageId.toString(), "tag1, tag2, tag3")
         wikiPageTagsInteractor.addUpdatePageTags(pageId.toString(), "tag1, tag2, tag3")
@@ -38,7 +37,7 @@ class WikiPageTagsInteractorTest {
     }
 
     @Test
-    fun `should handle removing tags from a page`() = runTest{
+    fun `should handle removing tags from a page`() {
         val pageId = wikiInteractor.createPage(Page("Test", "Test creating tags"))
         wikiPageTagsInteractor.addUpdatePageTags(pageId.toString(), "tag1, tag2, tag3")
         wikiPageTagsInteractor.addUpdatePageTags(pageId.toString(), "tag1, tag2")

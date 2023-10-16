@@ -32,7 +32,7 @@ class WikiInteractor(private val testWikiInteractor: TestWikiInteractor, private
         repository.updatePage(id, updatedPage)
     }
 
-    suspend fun createPage(page: Page): Int {
+    fun createPage(page: Page): Int {
         if(page.title.isBlank()) {
             throw UserError("Please provide a title")
         } else if (page.content.isBlank()) {

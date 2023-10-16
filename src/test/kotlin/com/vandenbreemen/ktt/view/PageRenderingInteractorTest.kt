@@ -4,7 +4,6 @@ import com.vandenbreemen.ktt.interactor.MarkdownInteractor
 import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 import com.vandenbreemen.ktt.view.plugins.PageLinkPlugin
-import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.shouldContain
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -43,7 +42,7 @@ This is a test.  You can [Create a New Page] by following the link
     }
 
     @Test
-    fun `should translate page links for existing pages`() = runTest{
+    fun `should translate page links for existing pages`() {
         //  Arrange
         repository.createPage(Page("Test Page", "This is a test"))
         val markdown =

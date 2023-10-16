@@ -2,7 +2,6 @@ package com.vandenbreemen.ktt.persistence
 
 import com.vandenbreemen.ktt.message.NoSuchPageError
 import com.vandenbreemen.ktt.model.Page
-import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.fail
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.AfterEach
@@ -28,7 +27,7 @@ class SQLiteWikiRepositoryTest() {
     }
 
     @Test
-    fun `should store a page`() = runTest{
+    fun `should store a page`() {
         val repo = SQLiteWikiRepository(filename)
         val page = Page("First Stored Page", "This is a test of storing a page")
         repo.createPage(page)
@@ -36,7 +35,7 @@ class SQLiteWikiRepositoryTest() {
     }
 
     @Test
-    fun `should provide ID of last created page when creating a page`() = runTest{
+    fun `should provide ID of last created page when creating a page`() {
         val repo = SQLiteWikiRepository(filename)
         val page = Page("First Stored Page", "This is a test of storing a page")
         repo.createPage(page)
@@ -45,7 +44,7 @@ class SQLiteWikiRepositoryTest() {
     }
 
     @Test
-    fun `should handle no such page`() = runTest {
+    fun `should handle no such page`()  {
         val repo = SQLiteWikiRepository(filename)
         val page = Page("First Stored Page", "This is a test of storing a page")
         repo.createPage(page)
@@ -59,7 +58,7 @@ class SQLiteWikiRepositoryTest() {
     }
 
     @Test
-    fun `should handle editing an existing page`()  = runTest{
+    fun `should handle editing an existing page`()  {
         val repo = SQLiteWikiRepository(filename)
         val page = Page("First Stored Page", "This is a test of storing a page")
         repo.createPage(page)

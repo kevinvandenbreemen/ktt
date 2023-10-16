@@ -21,13 +21,13 @@ class WikiPresenter(private val wikiInteractor: WikiInteractor, private val page
         return wikiInteractor.fetchPage(pageId)
     }
 
-    suspend fun updatePage(pageId: String, updated: Page) {
+    fun updatePage(pageId: String, updated: Page) {
         CoroutineScope(dispatcher).launch {
             wikiInteractor.updatePage(pageId, updated)
         }
     }
 
-    suspend fun createPage(page: Page): Int {
+    fun createPage(page: Page): Int {
         return wikiInteractor.createPage(page)
     }
 
