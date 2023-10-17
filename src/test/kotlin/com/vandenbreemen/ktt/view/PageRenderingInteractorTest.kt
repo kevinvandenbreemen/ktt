@@ -55,4 +55,31 @@ This test contains a link to a [Test Page] that you can try out.
         rendered.shouldContain("<a href=\"/page/1\">Test Page</a>")
     }
 
+    //  Leave these for any implementation of markdown that supports the extended specification that includes footnotes
+    //  see also https://www.markdownguide.org/extended-syntax/#footnotes
+    //  TODO    for later
+    //@Test
+    fun `should ignore links that begin with carets`() {
+        val markdown =
+            """
+Here's a simple footnote,[^1] and here's a longer one.[^bignote]
+
+[^1]: This is the first footnote.
+
+[^bignote]: Here's one with multiple paragraphs and code.
+
+    Indent paragraphs to include them in the footnote.
+
+    `{ my code }`
+
+    Add as many paragraphs as you like.
+""".trimIndent()
+
+        val rendered = pageRenderingInteractor.render(Page("test", markdown))
+
+        println(rendered)
+
+        rendered.shouldContain("<a href=\"/page/1\">Test Page</a>")
+    }
+
 }
