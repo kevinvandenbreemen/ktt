@@ -47,6 +47,9 @@ Repo to try out some development using ktor for Kotlin server-side coding
 ## Info on Kotlinx.HTML
 * https://github.com/Kotlin/kotlinx.html/wiki/
 
+## Info on the Markdown Lib used
+https://github.com/JetBrains/markdown
+
 # Future Feature Ideas
 ## CSS stored in the database
 * Right now the css is just hard-coded in the ```Styling``` class.  
