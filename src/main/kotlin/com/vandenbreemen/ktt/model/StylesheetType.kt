@@ -1,5 +1,7 @@
 package com.vandenbreemen.ktt.model
 
-enum class StylesheetType {
-    WikiEntry
+import com.vandenbreemen.ktt.web.Classes.wikiEntry
+
+enum class StylesheetType(val cssClass: String) {
+    WikiEntry(wikiEntry)
 }

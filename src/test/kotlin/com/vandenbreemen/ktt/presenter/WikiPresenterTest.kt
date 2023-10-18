@@ -1,5 +1,6 @@
 package com.vandenbreemen.ktt.presenter
 
+import com.vandenbreemen.ktt.interactor.CustomCssInteractor
 import com.vandenbreemen.ktt.interactor.TestWikiInteractor
 import com.vandenbreemen.ktt.interactor.WikiInteractor
 import com.vandenbreemen.ktt.interactor.WikiPageTagsInteractor
@@ -23,7 +24,8 @@ class WikiPresenterTest {
         wikiPresenter = WikiPresenter(WikiInteractor(
             TestWikiInteractor(),
             repository
-            ), WikiPageTagsInteractor(repository)
+            ), WikiPageTagsInteractor(repository),
+            customCssInteractor = CustomCssInteractor(repository)
         )
     }
 

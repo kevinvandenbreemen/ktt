@@ -1,13 +1,11 @@
 package com.vandenbreemen.ktt.web
 
-import com.vandenbreemen.ktt.interactor.MarkdownInteractor
-import com.vandenbreemen.ktt.interactor.TestWikiInteractor
-import com.vandenbreemen.ktt.interactor.WikiInteractor
-import com.vandenbreemen.ktt.interactor.WikiPageTagsInteractor
+import com.vandenbreemen.ktt.interactor.*
 import com.vandenbreemen.ktt.macro.AboutMacro
 import com.vandenbreemen.ktt.main.WikiApplication
 import com.vandenbreemen.ktt.message.NoSuchPageError
 import com.vandenbreemen.ktt.model.Page
+import com.vandenbreemen.ktt.model.StylesheetType
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 import com.vandenbreemen.ktt.presenter.WikiPresenter
 import com.vandenbreemen.ktt.view.PageRenderingInteractor
@@ -35,7 +33,9 @@ fun startServer() {
     WikiApplication.pageRenderingPluginRegistry.register(PageLinkPlugin(repository))
     val renderingInteractor = PageRenderingInteractor(MarkdownInteractor(), WikiApplication.pageRenderingPluginRegistry)
 
-    val presenter = WikiPresenter( WikiInteractor(TestWikiInteractor(), repository), WikiPageTagsInteractor(repository))
+    val presenter = WikiPresenter( WikiInteractor(TestWikiInteractor(), repository), WikiPageTagsInteractor(repository),
+            customCssInteractor = CustomCssInteractor(repository)
+        )
 
     embeddedServer(Netty, 8080) {
         routing {
@@ -49,14 +49,87 @@ fun startServer() {
 
             submitCreatedPage(presenter, logger)
 
-            createPage()
+            createPage(presenter)
 
-            searchPage()
+            searchPage(presenter)
 
             submitSearch(presenter)
+
+            customCssTooling(presenter)
         }
     }.start(wait = true)
 
+}
+
+private fun Routing.customCssTooling(presenter: WikiPresenter) {
+    post("/setup/css/{type}") {
+        context.parameters["type"]?.let { pageType ->
+
+            val type = StylesheetType.valueOf(pageType)
+
+            call.receiveParameters().let { params ->
+                val css = params["css"]
+
+                if (css.isNullOrBlank()) {
+                    call.respond(HttpStatusCode.BadRequest, "Please specify css for ${type.name}")
+                } else {
+                    presenter.updateCssByType(type, css)
+                    call.respondRedirect("/")
+                }
+            }
+        }
+    }
+
+    get("/setup/css/{type}") {
+        context.parameters["type"]?.let { pageType ->
+
+            val type = StylesheetType.valueOf(pageType)
+            val existingCss = presenter.getCssByType(type)
+
+            context.respondText(contentType = ContentType.Text.Html) {
+                return@respondText StringBuilder().appendHTML().html {
+                    head {
+                        style {
+                            unsafe {
+                                raw(presenter.css)
+                            }
+                        }
+                    }
+
+                    body {
+                        h1 {
+                            +"${type.name} css"
+                        }
+                        p {
+                            +"CSS class name for this item is"
+                        }
+                        p {
+                            +"${type.cssClass}"
+                        }
+                        form(action = "/setup/css/${type.name}", method = FormMethod.post) {
+                            textArea(wrap = TextAreaWrap.hard) {
+                                name = "css"
+                                contentEditable = true
+                                autoFocus = true
+                                text(existingCss)
+                            }
+                            div(classes = Classes.controlPanel) {
+                                button(name = "submit", type = ButtonType.submit) {
+                                    accessKey = "s"
+                                    text("SAVE")
+                                }
+                                button(name = "cancel", type = ButtonType.button) {
+                                    onClick = "history.back()"
+                                    accessKey = "c"
+                                    text("CANCEL")
+                                }
+                            }
+                        }
+                    }
+                }.toString()
+            }
+        }
+    }
 }
 
 private fun Routing.mainPage(presenter: WikiPresenter) {
@@ -66,7 +139,7 @@ private fun Routing.mainPage(presenter: WikiPresenter) {
                 head {
                     style {
                         unsafe {
-                            raw(css)
+                            raw(presenter.css)
                         }
                     }
                 }
@@ -90,6 +163,24 @@ private fun Routing.mainPage(presenter: WikiPresenter) {
                                 }
                             }
                         }
+                        h2 {
+                            +"Configuration"
+                        }
+                        div(classes = Classes.controlPanel) {
+                            h3 {
+                                +"CSS Config"
+                            }
+                            ul {
+                                StylesheetType.values().forEach {type->
+                                    li {
+                                        a(href = "/setup/css/${type.name}") {
+                                            +"${type.name}"
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
                     }
                 }
             }.toString()
@@ -107,7 +198,7 @@ private fun Routing.submitSearch(presenter: WikiPresenter) {
                     head {
                         style {
                             unsafe {
-                                raw(css)
+                                raw(presenter.css)
                             }
                         }
                     }
@@ -144,14 +235,14 @@ private fun Routing.submitSearch(presenter: WikiPresenter) {
     }
 }
 
-private fun Routing.searchPage() {
+private fun Routing.searchPage(presenter: WikiPresenter) {
     get("/search") {
         context.respondText(contentType = ContentType.Text.Html) {
             StringBuilder().appendHTML().html {
                 head {
                     style {
                         unsafe {
-                            raw(css)
+                            raw(presenter.css)
                         }
                     }
                 }
@@ -182,12 +273,12 @@ private fun Routing.searchPage() {
     }
 }
 
-private fun buildEditor(title: String, existingPageContent: String?, pageId: String?, existingPageTags: String = ""): String {
+private fun buildEditor(presenter: WikiPresenter, title: String, existingPageContent: String?, pageId: String?, existingPageTags: String = ""): String {
     return StringBuilder().appendHTML().html {
         head {
             style {
                 unsafe {
-                    raw(css)
+                    raw(presenter.css)
                 }
             }
         }
@@ -237,11 +328,11 @@ private fun buildEditor(title: String, existingPageContent: String?, pageId: Str
     }.toString()
 }
 
-private fun Routing.createPage() {
+private fun Routing.createPage(presenter: WikiPresenter) {
     get("/page/create/{title}") {
         context.parameters["title"]?.let { title ->
             context.respondText(contentType = ContentType.Text.Html) {
-                buildEditor(title, null, null)
+                buildEditor(presenter, title, null, null)
             }
         }
     }
@@ -305,7 +396,7 @@ private fun Routing.editPage(presenter: WikiPresenter) {
                 val tags = presenter.getTags(pageId)
 
                 context.respondText(contentType = ContentType.Text.Html) {
-                    buildEditor(page.title, page.content, pageId, tags)
+                    buildEditor(presenter, page.title, page.content, pageId, tags)
                 }
             } catch (e: Exception) {
                 context.respondText(
@@ -333,7 +424,7 @@ private fun Routing.viewPage(
                         head {
                             style {
                                 unsafe {
-                                    raw(css)
+                                    raw(presenter.css)
                                 }
                             }
                         }
