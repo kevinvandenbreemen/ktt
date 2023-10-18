@@ -30,6 +30,15 @@ WikiApplication.macroRegistry.register(myMacro)
 
 Your ```myMacro``` object will need to be of a type that implements the ```Macro``` interface.
 
+## Custom CSS
+You can customize the css for the wiki by updating the styling for the appropriate section of each page on the main screen (by going to ```/``` on the wiki).  Note that for now css classes are used to control most of the styling.  So, for example, the body of a wiki entry being displayed falls under css class ```.wiki_entry```.  You can extend this system by adding more classes (see the ```Classes``` class).  If you wish to make a given css class customizable simply add an entry for it to the StylesheetType enum, and provide the css class you wish to make customizable as constructor argument, as in:
+
+```
+enum class StylesheetType(val cssClass: String) {
+    WikiEntry(wikiEntry),
+    ControlPanel(controlPanel)
+}
+```
 
 # Libraries Used
 ## ktt
