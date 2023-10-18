@@ -37,4 +37,24 @@ class CustomCssInteractorTest {
         css.shouldContain(expectedCss)
     }
 
+    @Test
+    fun `should load css for specific content type`() {
+
+        val expectedCss = """
+.wiki_entry div {
+    background: blue;
+}
+        """.trimIndent()
+
+        customCssInteractor.storeStylesheet(StylesheetType.WikiEntry, """
+.wiki_entry div {
+    background: blue;
+}
+        """.trimIndent())
+
+
+        val css = customCssInteractor.getCssForType(StylesheetType.WikiEntry)
+        css.shouldContain(expectedCss)
+    }
+
 }

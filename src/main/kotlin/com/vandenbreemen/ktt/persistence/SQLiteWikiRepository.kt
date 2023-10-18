@@ -154,4 +154,11 @@ class SQLiteWikiRepository(private val databasePath: String) {
         return result.toString()
     }
 
+    fun getCssForType(type: StylesheetType): String {
+        val data = dao.query("SELECT css FROM wiki_css WHERE type=?", arrayOf(type.name))
+        return if(data.isEmpty()) "" else {
+            data[0]["css"].toString()
+        }
+    }
+
 }

@@ -21,4 +21,8 @@ class CustomCssInteractor(private val repository: SQLiteWikiRepository) {
         return StringBuilder(css).append("\n").append(storedCss).toString()
     }
 
+    fun getCssForType(type: StylesheetType): String {
+        return repository.getCssForType(type)
+    }
+
 }
