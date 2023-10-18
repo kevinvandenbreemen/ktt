@@ -20,9 +20,6 @@ object Colors {
 
 const val css =
 """
-.control_panel {
-    background-color: red;
-}
 
 .editor_section {
     
