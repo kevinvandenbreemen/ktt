@@ -5,6 +5,7 @@ import com.vandenbreemen.kevincommon.db.SQLiteDAO
 import com.vandenbreemen.ktt.message.NoSuchPageError
 import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.model.PageSearchResult
+import com.vandenbreemen.ktt.model.StylesheetType
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 
@@ -54,6 +55,14 @@ class SQLiteWikiRepository(private val databasePath: String) {
             );
             
             CREATE UNIQUE INDEX uc_page_tag ON page_tag(pageId, tagId);
+        """.trimIndent())
+
+        //  CSS for different types of content
+        schema.addDatabaseChange(4, """
+            CREATE TABLE wiki_css(
+                type TEXT PRIMARY KEY NOT NULL,
+                css TEXT NOT NULL
+            );
         """.trimIndent())
     }
 
@@ -126,6 +135,23 @@ class SQLiteWikiRepository(private val databasePath: String) {
         return dao.query("SELECT name FROM tag WHERE id IN (SELECT tagId FROM page_tag WHERE pageId=?)", arrayOf(pageId)).map { row->
             row["name"] as String
         }
+    }
+
+    fun storeUpdateCss(type: StylesheetType, css: String) {
+        dao.update("REPLACE INTO wiki_css (type, css) VALUES (?, ?)", arrayOf(type.name, css))
+    }
+
+    /**
+     * Obtain all css blocks of different types
+     */
+    fun getCss(): String {
+        val cssBlocks = dao.query("SELECT type, css FROM wiki_css", emptyArray())
+        val result = StringBuilder()
+        cssBlocks.forEach { row->
+            result.append("/* ").append(row["type"].toString()).append(" */").append("\n\n").append(row["css"].toString()).append("\n")
+        }
+
+        return result.toString()
     }
 
 }
