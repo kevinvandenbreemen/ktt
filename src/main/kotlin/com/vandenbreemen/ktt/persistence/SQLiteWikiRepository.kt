@@ -6,6 +6,7 @@ import com.vandenbreemen.ktt.message.NoSuchPageError
 import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.model.PageSearchResult
 import com.vandenbreemen.ktt.model.StylesheetType
+import com.vandenbreemen.ktt.view.UIConfiguration
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 
@@ -63,6 +64,13 @@ class SQLiteWikiRepository(private val databasePath: String) {
                 type TEXT PRIMARY KEY NOT NULL,
                 css TEXT NOT NULL
             );
+        """.trimIndent())
+
+        schema.addDatabaseChange(5, """
+            CREATE TABLE wiki_view_conf(
+                http_port INTEGER NOT NULL DEFAULT 8080
+            );
+            INSERT INTO wiki_view_conf(http_port) VALUES (8080);
         """.trimIndent())
     }
 
@@ -159,6 +167,13 @@ class SQLiteWikiRepository(private val databasePath: String) {
         return if(data.isEmpty()) "" else {
             data[0]["css"].toString()
         }
+    }
+
+    fun getUIConfiguration(): UIConfiguration {
+        val data = dao.query("SELECT http_port FROM wiki_view_conf", arrayOf())[0]
+        return UIConfiguration(
+            data["http_port"] as Int
+        )
     }
 
 }
