@@ -144,7 +144,7 @@ private fun Routing.mainPage(presenter: WikiPresenter) {
                     }
                 }
                 body {
-                    div {
+                    div(classes = Classes.wikiEntry) {
                         h1 {
                             +"Welcome Back"
                         }
