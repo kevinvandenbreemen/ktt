@@ -461,6 +461,11 @@ private fun Routing.viewPage(
                                     href = "/search"
                                     +"SEARCH"
                                 }
+                                a {
+                                    accessKey = "h"
+                                    href = "/"
+                                    +"HOME"
+                                }
                             }
                         }
                     }.toString()
