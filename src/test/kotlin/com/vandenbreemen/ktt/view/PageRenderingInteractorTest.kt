@@ -55,6 +55,23 @@ This test contains a link to a [Test Page] that you can try out.
         rendered.shouldContain("<a href=\"/page/1\">Test Page</a>")
     }
 
+    @Test
+    fun `should not support question marks in page links`() {
+        //  Arrange
+        repository.createPage(Page("Test Page", "This is a test"))
+        val markdown =
+            """
+## Here is a Test
+This test contains a link to a [Test Page?] that you can try out.
+""".trimIndent()
+
+        val rendered = pageRenderingInteractor.render(Page("test", markdown))
+
+        println(rendered)
+
+        rendered.shouldContain("[Test Page?]")
+    }
+
     //  Leave these for any implementation of markdown that supports the extended specification that includes footnotes
     //  see also https://www.markdownguide.org/extended-syntax/#footnotes
     //  TODO    for later
