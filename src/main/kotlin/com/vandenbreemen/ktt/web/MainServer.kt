@@ -32,14 +32,19 @@ fun startServer() {
 
     WikiApplication.pageRenderingPluginRegistry.register(PageLinkPlugin(repository))
     val renderingInteractor = PageRenderingInteractor(MarkdownInteractor(), WikiApplication.pageRenderingPluginRegistry)
+    val configInteractor = ConfigurationInteractor(repository)
 
     val presenter = WikiPresenter( WikiInteractor(TestWikiInteractor(), repository), WikiPageTagsInteractor(repository),
             customCssInteractor = CustomCssInteractor(repository)
         )
 
-    embeddedServer(Netty, 8080) {
+    val port = configInteractor.getPort()
+    logger.info("Running on port $port")
+
+    embeddedServer(Netty, port) {
         routing {
-            mainPage(presenter)
+            mainPage(presenter, configInteractor)
+            config(configInteractor)
 
             viewPage(presenter, renderingInteractor)
 
@@ -132,8 +137,43 @@ private fun Routing.customCssTooling(presenter: WikiPresenter) {
     }
 }
 
-private fun Routing.mainPage(presenter: WikiPresenter) {
+/**
+ * Store configuration updates
+ */
+private fun Routing.config(configurationInteractor: ConfigurationInteractor) {
+    post("/config") {
+        call.receiveParameters()?.let { parameters ->
+
+            val currentConfig = configurationInteractor.getUIConfiguration()
+
+            try {
+                parameters["port"]?.let { port ->
+                    with(currentConfig.copy(runPort = port.toInt())) {
+                        configurationInteractor.updateUIConfiguration(this)
+                    }
+                }
+
+                call.respondRedirect("/")
+            } catch (e: Exception) {
+                context.respondText(contentType = ContentType.Text.Html) {
+                    StringBuilder().appendHTML().html {
+                        body {
+                            div(classes = Classes.errorSection) {
+                                +(e.message ?: "Unknown error")
+                            }
+                        }
+                    }.toString()
+                }
+            }
+        }
+    }
+}
+
+private fun Routing.mainPage(presenter: WikiPresenter, configurationInteractor: ConfigurationInteractor) {
     get("/") {
+
+        val currentPort = configurationInteractor.getPort()
+
         this.context.respondText(contentType = ContentType.Text.Html) {
             return@respondText StringBuilder().appendHTML().html {
                 head {
@@ -167,6 +207,26 @@ private fun Routing.mainPage(presenter: WikiPresenter) {
                             +"Configuration"
                         }
                         div(classes = Classes.controlPanel) {
+                            h3 {
+                                +"App Config"
+                            }
+                            form(action = "/config", method = FormMethod.post) {
+                                table {
+                                    tr {
+                                        td {
+                                            +"Website Port (requires restart)"
+                                        }
+                                        td {
+                                            input(name = "port", type = InputType.number) {
+                                                value = currentPort.toString()
+                                            }
+                                        }
+                                    }
+                                }
+                                button(type = ButtonType.submit) {
+                                    +"Apply"
+                                }
+                            }
                             h3 {
                                 +"CSS Config"
                             }
