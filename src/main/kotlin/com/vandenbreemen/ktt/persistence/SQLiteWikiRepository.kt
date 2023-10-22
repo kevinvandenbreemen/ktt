@@ -176,4 +176,9 @@ class SQLiteWikiRepository(private val databasePath: String) {
         )
     }
 
+    fun updateUIConfiguration(configuration: UIConfiguration) {
+        dao.update("UPDATE wiki_view_conf SET http_port=?", arrayOf(configuration.runPort))
+    }
+
+
 }

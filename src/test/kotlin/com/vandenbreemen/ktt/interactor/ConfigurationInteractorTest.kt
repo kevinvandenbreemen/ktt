@@ -21,4 +21,15 @@ class ConfigurationInteractorTest {
         configurationInteractor.getPort() shouldBeEqualTo 8080
     }
 
+    @Test
+    fun `should update the port`() {
+
+        val configuration = configurationInteractor.getUIConfiguration()
+        with(configuration.copy(runPort = 8000)){
+            configurationInteractor.updateUIConfiguration(this)
+        }
+
+        configurationInteractor.getPort() shouldBeEqualTo 8000
+    }
+
 }
