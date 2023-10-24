@@ -10,8 +10,6 @@ class TableOfContentsPlugin: PageRenderingPlugin {
 
         val headers = headersRegex.findAll(markdownContent)
             .map {
-                println("gr0=${it.groupValues[0]}")
-                println("gr1=${it.groupValues[1]}")
                 it.groupValues[0] to it.groupValues[1] }
             .toList()
 
@@ -22,7 +20,6 @@ class TableOfContentsPlugin: PageRenderingPlugin {
         if (headers.isNotEmpty()) {
             tableOfContents.append("Table of Contents\n")
             for ((hashes, header) in headers) {
-                println("Processing '$header'")
                 val indentation = "  ".repeat(hashes.count { it == '#' } - 1)
                 tableOfContents.append("$indentation- [${header.trim()}](#${
                     header.lowercase(Locale.getDefault()).replace("\\s+".toRegex(), "-").also { link-> 
@@ -31,11 +28,9 @@ class TableOfContentsPlugin: PageRenderingPlugin {
             }
         }
 
-        println(headerLinks)
         var updatedMarkdown = markdownContent
         headerLinks.entries.forEach { headerToLink->
-            println("Mapping:  $headerToLink")
-            updatedMarkdown = updatedMarkdown.replace(headerToLink.key, "<section id=\"${headerToLink.value}\" />\n\n${headerToLink.key}\n")
+            updatedMarkdown = updatedMarkdown.replace(headerToLink.key, "<section id=\"${headerToLink.value}\">\n\n${headerToLink.key}\n</section>")
         }
 
         return StringBuilder(tableOfContents.toString()).append("\n\n").append(updatedMarkdown).toString()
