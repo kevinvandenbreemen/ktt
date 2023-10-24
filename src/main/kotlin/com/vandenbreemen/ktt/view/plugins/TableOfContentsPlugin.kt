@@ -1,6 +1,7 @@
 package com.vandenbreemen.ktt.view.plugins
 
 import com.vandenbreemen.ktt.view.PageRenderingPlugin
+import java.util.*
 
 class TableOfContentsPlugin: PageRenderingPlugin {
 
@@ -23,7 +24,8 @@ class TableOfContentsPlugin: PageRenderingPlugin {
             for ((hashes, header) in headers) {
                 println("Processing '$header'")
                 val indentation = "  ".repeat(hashes.count { it == '#' } - 1)
-                tableOfContents.append("$indentation- [${header.trim()}](#${header.toLowerCase().replace("\\s+".toRegex(), "-").also {link-> 
+                tableOfContents.append("$indentation- [${header.trim()}](#${
+                    header.lowercase(Locale.getDefault()).replace("\\s+".toRegex(), "-").also { link-> 
                     headerLinks[hashes] = link
                 }})\n")
             }
@@ -32,7 +34,8 @@ class TableOfContentsPlugin: PageRenderingPlugin {
         println(headerLinks)
         var updatedMarkdown = markdownContent
         headerLinks.entries.forEach { headerToLink->
-            updatedMarkdown = updatedMarkdown.replace(headerToLink.key, "<section id=\"${headerToLink.value}\">\n\n${headerToLink.key}\n")
+            println("Mapping:  $headerToLink")
+            updatedMarkdown = updatedMarkdown.replace(headerToLink.key, "<section id=\"${headerToLink.value}\" />\n\n${headerToLink.key}\n")
         }
 
         return StringBuilder(tableOfContents.toString()).append("\n\n").append(updatedMarkdown).toString()
