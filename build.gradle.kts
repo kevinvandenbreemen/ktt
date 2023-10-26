@@ -21,6 +21,7 @@ dependencies {
     val sqlite_version = "3.43.0.0"
     val sqlite_dao_version = "1.1.2.0000"
     val kotlin_html_version = "0.9.1"
+    val kmarkdown_tools_version = "1.0.0.0"
 
     implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("org.slf4j:slf4j-api:$slf4j_version")
@@ -33,6 +34,9 @@ dependencies {
 
     //  HTML
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:$kotlin_html_version")
+
+    //  Markdown tooling
+    implementation("com.github.kevinvandenbreemen:kmarkdown-tools:$kmarkdown_tools_version")
 
     //  Test Stuff
     testImplementation(kotlin("test"))
