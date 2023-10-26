@@ -30,7 +30,7 @@ class TableOfContentsPlugin: PageRenderingPlugin {
 
         var updatedMarkdown = markdownContent
         headerLinks.entries.forEach { headerToLink->
-            updatedMarkdown = updatedMarkdown.replace(headerToLink.key, "<section id=\"${headerToLink.value}\">\n\n${headerToLink.key}\n</section>")
+            updatedMarkdown = updatedMarkdown.replace(headerToLink.key, "<section id=\"${headerToLink.value}\">\n\n${headerToLink.key}\n</section>\n")
         }
 
         return StringBuilder(tableOfContents.toString()).append("\n\n").append(updatedMarkdown).toString()

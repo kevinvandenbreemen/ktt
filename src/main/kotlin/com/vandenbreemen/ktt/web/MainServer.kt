@@ -10,6 +10,7 @@ import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 import com.vandenbreemen.ktt.presenter.WikiPresenter
 import com.vandenbreemen.ktt.view.PageRenderingInteractor
 import com.vandenbreemen.ktt.view.plugins.PageLinkPlugin
+import com.vandenbreemen.ktt.view.plugins.TableOfContentsPlugin
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -31,6 +32,8 @@ fun startServer() {
     val repository = SQLiteWikiRepository(("main.db"))
 
     WikiApplication.pageRenderingPluginRegistry.register(PageLinkPlugin(repository))
+    WikiApplication.pageRenderingPluginRegistry.register(TableOfContentsPlugin())
+
     val renderingInteractor = PageRenderingInteractor(MarkdownInteractor(), WikiApplication.pageRenderingPluginRegistry)
     val configInteractor = ConfigurationInteractor(repository)
 
