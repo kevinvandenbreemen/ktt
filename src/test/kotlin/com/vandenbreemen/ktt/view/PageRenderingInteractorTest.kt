@@ -99,4 +99,37 @@ Here's a simple footnote,[^1] and here's a longer one.[^bignote]
         rendered.shouldContain("<a href=\"/page/1\">Test Page</a>")
     }
 
+    @Test
+    fun `should create page links that include periods`() {
+        //  Arrange
+        repository.createPage(Page("Test Page", "This is a test"))
+        val markdown =
+            """
+## Here is a Test
+This test contains a link to a [Test.Page] that you can try out.
+""".trimIndent()
+
+        val rendered = pageRenderingInteractor.render(Page("test", markdown))
+
+        println(rendered)
+
+        rendered.shouldContain("<a href=\"/page/create/Test.Page\">Test.Page</a>")
+    }
+
+    @Test
+    fun `should create page links that contain brackets`() {
+        repository.createPage(Page("Test Page", "This is a test"))
+        val markdown =
+            """
+## Here is a Test
+This test contains a link to a [Test.Page(num)] that you can try out.
+""".trimIndent()
+
+        val rendered = pageRenderingInteractor.render(Page("test", markdown))
+
+        println(rendered)
+
+        rendered.shouldContain("<a href=\"/page/create/Test.Page(num)\">Test.Page(num)</a>")
+    }
+
 }
