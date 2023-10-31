@@ -9,6 +9,7 @@ import com.vandenbreemen.ktt.model.PageBreadcrumbItem
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.shouldBeEqualTo
+import org.amshove.kluent.shouldBeFalse
 import org.amshove.kluent.shouldBeTrue
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -90,6 +91,12 @@ class WikiPresenterTest {
         wikiPresenter.updatePage(id.toString(), Page("page1", "Updated page"))
         Thread.sleep(1000)  //  Cheesy but updating pages is done as a spawned coroutine
         wikiPresenter.hasPreviousVersion(id).shouldBeTrue()
+    }
+
+    @Test
+    fun `should not find previous version of initially created page`() {
+        val id = wikiPresenter.createPage(Page("page1", "test page"))
+        wikiPresenter.hasPreviousVersion(id).shouldBeFalse()
     }
 
 }
