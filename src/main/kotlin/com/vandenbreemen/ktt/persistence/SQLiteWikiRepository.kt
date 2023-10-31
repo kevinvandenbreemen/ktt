@@ -9,6 +9,7 @@ import com.vandenbreemen.ktt.model.StylesheetType
 import com.vandenbreemen.ktt.view.UIConfiguration
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeUnit
 
 class SQLiteWikiRepository(private val databasePath: String) {
 
@@ -71,6 +72,17 @@ class SQLiteWikiRepository(private val databasePath: String) {
                 http_port INTEGER NOT NULL DEFAULT 8080
             );
             INSERT INTO wiki_view_conf(http_port) VALUES (8080);
+        """.trimIndent())
+
+        schema.addDatabaseChange(6, """
+            CREATE TABLE wiki_page_history(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                pageId INTEGER NOT NULL,
+                date INTEGER NOT NULL,
+                title TEXT NOT NULL,
+                content TEXT NOT NULL,
+                CONSTRAINT fk_pgh_pageid FOREIGN KEY(pageId) REFERENCES page(id) ON DELETE CASCADE
+            )
         """.trimIndent())
     }
 
@@ -178,6 +190,26 @@ class SQLiteWikiRepository(private val databasePath: String) {
 
     fun updateUIConfiguration(configuration: UIConfiguration) {
         dao.update("UPDATE wiki_view_conf SET http_port=?", arrayOf(configuration.runPort))
+    }
+
+    fun storeCurrentVersionOfPage(pageId: String) {
+        dao.update("INSERT INTO wiki_page_history(date, pageId, title, content) VALUES (?, ?, (SELECT title FROM page WHERE id=?), (SELECT content FROM page WHERE id=?))",
+                arrayOf(
+                    TimeUnit.SECONDS.convert(System.currentTimeMillis(), TimeUnit.MILLISECONDS).toInt(),
+                    pageId.toInt(),
+                    pageId.toInt(),
+                    pageId.toInt(),
+                )
+            )
+    }
+
+    fun fetchLastVersion(pageId: String): Page? {
+        val result = dao.query("SELECT title, content FROM wiki_page_history WHERE pageId=? ORDER BY date DESC LIMIT 1", arrayOf(pageId.toInt()))
+        if(result.size > 0) {
+            return Page(result[0]["title"].toString(), result[0]["content"].toString())
+        }
+
+        return null
     }
 
 

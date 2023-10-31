@@ -29,6 +29,7 @@ class WikiInteractor(private val testWikiInteractor: TestWikiInteractor, private
                 throw UserError("Cannot update the title to '${updatedPage.title}' because another page already exists with that title")
             }
         }
+        repository.storeCurrentVersionOfPage(id)
         repository.updatePage(id, updatedPage)
     }
 
@@ -53,6 +54,10 @@ class WikiInteractor(private val testWikiInteractor: TestWikiInteractor, private
         }
 
         return repository.searchPages(searchTerm)
+    }
+
+    fun fetchPreviousVersionOfPage(id: String): Page? {
+        return repository.fetchLastVersion(id)
     }
 
 }

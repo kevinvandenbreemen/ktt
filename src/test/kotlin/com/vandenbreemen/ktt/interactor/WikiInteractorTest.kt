@@ -71,6 +71,22 @@ class WikiInteractorTest {
     }
 
     @Test
+    fun `should store previous version of page during edit`() {
+        val edited = Page("Updated Page", "New Updates made")
+        try {
+            wikiInteractor.updatePage("1", edited)
+            val page = wikiInteractor.fetchPage("1")
+
+            val previous = wikiInteractor.fetchPreviousVersionOfPage("1")
+            previous!!.content shouldBeEqualTo "This is a test of the wiki page system"
+
+            page shouldBeEqualTo edited
+        } catch (e: UserError) {
+            fail("Should allow editing", e)
+        }
+    }
+
+    @Test
     fun `should not allow updating page title to existing page title`()  {
 
         wikiInteractor.createPage(Page("Separate Page", "Some content"))
