@@ -212,5 +212,10 @@ class SQLiteWikiRepository(private val databasePath: String) {
         return null
     }
 
+    fun hasPreviousVersion(pageId: Int): Boolean {
+        val result = dao.query("SELECT 1 FROM wiki_page_history WHERE pageId=?", arrayOf(pageId.toString()))
+        return result.isNotEmpty()
+    }
+
 
 }

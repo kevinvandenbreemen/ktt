@@ -60,4 +60,8 @@ class WikiInteractor(private val testWikiInteractor: TestWikiInteractor, private
         return repository.fetchLastVersion(id)
     }
 
+    fun hasPreviousVersion(pageId: Int): Boolean {
+        return repository.hasPreviousVersion(pageId)
+    }
+
 }

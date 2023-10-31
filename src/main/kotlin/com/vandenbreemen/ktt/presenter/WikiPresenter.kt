@@ -70,7 +70,7 @@ class WikiPresenter(private val wikiInteractor: WikiInteractor, private val page
     }
 
     fun hasPreviousVersion(pageId: Int): Boolean {
-        return wikiInteractor.fetchPreviousVersionOfPage(pageId.toString()) != null
+        return wikiInteractor.hasPreviousVersion(pageId)
     }
 
 }
