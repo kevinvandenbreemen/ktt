@@ -50,6 +50,7 @@ fun startServer() {
             config(configInteractor)
 
             viewPage(presenter, renderingInteractor)
+            undoChange(presenter)
 
             editPage(presenter)
 
@@ -472,6 +473,15 @@ private fun Routing.editPage(presenter: WikiPresenter) {
     }
 }
 
+private fun Routing.undoChange(presenter: WikiPresenter) {
+    get("/page/undo/{pageId}") {
+        context.parameters["pageId"]?.let { pageId ->
+            presenter.undoLastChange(pageId.toInt())
+            context.respondRedirect("/page/$pageId")
+        }
+    }
+}
+
 private fun Routing.viewPage(
     presenter: WikiPresenter,
     renderingInteractor: PageRenderingInteractor
@@ -528,6 +538,13 @@ private fun Routing.viewPage(
                                     accessKey = "h"
                                     href = "/"
                                     +"HOME"
+                                }
+                                if(presenter.hasPreviousVersion(pageId.toInt())) {
+                                    a {
+                                        accessKey = "u"
+                                        href = "/page/undo/$pageId"
+                                        +"UNDO LAST CHANGE"
+                                    }
                                 }
                             }
                         }

@@ -73,4 +73,12 @@ class WikiPresenter(private val wikiInteractor: WikiInteractor, private val page
         return wikiInteractor.hasPreviousVersion(pageId)
     }
 
+    fun undoLastChange(pageId: Int) {
+        CoroutineScope(dispatcher).launch {
+            wikiInteractor.fetchPreviousVersionOfPage(pageId.toString())?.let { previousVersion->
+                wikiInteractor.updatePage(pageId.toString(), previousVersion)
+            }
+        }
+    }
+
 }
