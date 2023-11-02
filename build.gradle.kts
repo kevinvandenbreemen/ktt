@@ -19,7 +19,7 @@ dependencies {
     val coroutine_test_version = "1.7.3"
     val kluent_version = "1.73"
     val sqlite_version = "3.43.0.0"
-    val sqlite_dao_version = "1.1.2.0000"
+    val sqlite_dao_version = "1.1.2.0001"
     val kotlin_html_version = "0.9.1"
     val kmarkdown_tools_version = "1.0.0.0"
 
