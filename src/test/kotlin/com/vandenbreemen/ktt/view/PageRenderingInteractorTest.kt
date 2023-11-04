@@ -132,4 +132,21 @@ This test contains a link to a [Test.Page(num)] that you can try out.
         rendered.shouldContain("<a href=\"/page/create/Test.Page(num)\">Test.Page(num)</a>")
     }
 
+    @Test
+    fun `should ignore alt texts for embedded images while creating links`() {
+        repository.createPage(Page("Test Page", "This is a test"))
+        val markdown =
+            """
+## Here is a Test
+This page contains ![test image](an/image)
+What do you think?
+""".trimIndent()
+
+        val rendered = pageRenderingInteractor.render(Page("test", markdown))
+
+        println(rendered)
+
+        rendered.shouldContain("<img src=\"an/image\" alt=\"test image\" />")
+    }
+
 }
