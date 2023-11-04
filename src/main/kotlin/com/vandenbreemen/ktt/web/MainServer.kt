@@ -22,10 +22,13 @@ import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.io.File
 
 val logger = LoggerFactory.getLogger("MainServer")
 
 fun startServer() {
+
+    val staticConteInteractor = StaticContentInteractor()
 
     WikiApplication.macroRegistry.register(AboutMacro())
 
@@ -46,6 +49,9 @@ fun startServer() {
 
     embeddedServer(Netty, port) {
         routing {
+
+            setupStaticContent(staticConteInteractor)
+
             mainPage(presenter, configInteractor)
             config(configInteractor)
 
@@ -68,6 +74,11 @@ fun startServer() {
         }
     }.start(wait = true)
 
+}
+
+private fun Routing.setupStaticContent(staticContentInteractor: StaticContentInteractor) {
+    staticContentInteractor.setupDirectory()
+    staticFiles("/res", File(staticContentInteractor.staticContentRoot))
 }
 
 private fun Routing.customCssTooling(presenter: WikiPresenter) {
