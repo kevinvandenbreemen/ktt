@@ -4,7 +4,7 @@ You can start the wiki by running the ```WikiApplication``` class.  The server w
 
 # Main Features
 ## Macros
-Macros will provide a syntax that looks as follows:
+Macros have a syntax that looks as follows:
 ```
 {@macro:MacroName}
 ```
@@ -18,17 +18,15 @@ Arguments are provided using values specified with quotes, as in:
 {@macro:Greeting msg="Hello to the world"}
 ```
 
-### Why have a prefix etc when other wikis just have a curly brace and macro name?
-At the moment I'd rather have an instantly recognizable prefix in the curly brace to allow me to put other things into this wiki software that involve curly braces...
-
 ### Adding Macros to the server
-Macros can be added via the macro registry, like this:
+
+Define a class that implements the ```Macro``` interface.  Then add it to the  macro registry:
 
 ```
 WikiApplication.macroRegistry.register(myMacro)
 ```
 
-Your ```myMacro``` object will need to be of a type that implements the ```Macro``` interface.
+At the moment this is done in the MainServer.kt file.
 
 ## Custom CSS
 You can customize the css for the wiki by updating the styling for the appropriate section of each page on the main screen (by going to ```/``` on the wiki).  Note that for now css classes are used to control most of the styling.  So, for example, the body of a wiki entry being displayed falls under css class ```.wiki_entry```.  You can extend this system by adding more classes (see the ```Classes``` class).  If you wish to make a given css class customizable simply add an entry for it to the StylesheetType enum, and provide the css class you wish to make customizable as constructor argument, as in:
