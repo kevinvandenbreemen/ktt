@@ -11,7 +11,7 @@ class PageLinkPlugin(private val repository: SQLiteWikiRepository): PageRenderin
             val prefixChar = it.groupValues[1]
 
             repository.searchPageByTitle(linkText)?.let { existingPageId->
-                return@replace "[$linkText](/page/$existingPageId)"
+                return@replace "$prefixChar[$linkText](/page/$existingPageId)"
             }
 
             "$prefixChar[$linkText](/page/create/$linkText)"
