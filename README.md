@@ -10,6 +10,15 @@ java -jar ktt.jar
 ### From inside your IDE
 You can start the wiki by running the ```WikiApplication``` class.  The server will start on port 8080.  Data will be stored in database file main.db in the same directory.
 
+### Invoking from my Code
+You can also start up the wiki from your own code by calling 
+
+```
+WikiApplication.startup()
+```
+
+
+
 # Main Features
 ## Macros
 Macros have a syntax that looks as follows:

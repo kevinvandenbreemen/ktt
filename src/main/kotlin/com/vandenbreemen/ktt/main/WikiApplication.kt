@@ -21,6 +21,7 @@ object WikiApplication {
         PageRenderingPluginRegistry()
     }
 
+    @JvmStatic
     val macroRegistry: MacroRegistry by lazy {
         MacroRegistry().also {
             pageRenderingPluginRegistry.register(MacrosPlugin(it))
@@ -37,18 +38,24 @@ object WikiApplication {
         customCssInteractor = CustomCssInteractor(repository)
     )
 
+    /**
+     * Start the wiki server up.
+     */
     @JvmStatic
-    fun main(args: Array<String>) {
-
-        val about = javaClass.getResource("/about.dat").readText()
-        println(about)
-
+    fun startup() {
         macroRegistry.register(AboutMacro())
 
         pageRenderingPluginRegistry.register(PageLinkPlugin(repository))
         pageRenderingPluginRegistry.register(TableOfContentsPlugin())
 
         startServer(staticContentInteractor, configInteractor, renderingInteractor, presenter)
+    }
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val about = javaClass.getResource("/about.dat").readText()
+        println(about)
+        startup()
     }
 
 }
