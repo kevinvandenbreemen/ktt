@@ -5,10 +5,13 @@ class AboutMacro(): Macro {
         get() = "kttAbout"
 
     override fun execute(args: Map<String, String>): String {
-        return """
-KTT (KTor Training) Wiki Software
 
-Software written by Kevin VanDenBreemen as a fun project.  I hope this wiki can help you too
+        val about = javaClass.getResource("/about.dat").readText()
+
+        return """
+```
+$about
+```
         """.trimIndent()
     }
 }

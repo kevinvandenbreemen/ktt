@@ -40,6 +40,9 @@ object WikiApplication {
     @JvmStatic
     fun main(args: Array<String>) {
 
+        val about = javaClass.getResource("/about.dat").readText()
+        println(about)
+
         macroRegistry.register(AboutMacro())
 
         pageRenderingPluginRegistry.register(PageLinkPlugin(repository))
