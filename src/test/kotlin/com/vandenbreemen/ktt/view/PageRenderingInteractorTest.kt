@@ -149,4 +149,22 @@ What do you think?
         rendered.shouldContain("<img src=\"an/image\" alt=\"test image\" />")
     }
 
+    @Test
+    fun `should properly render bullet points with links`() {
+        //  Arrange
+        repository.createPage(Page("Test Page", "This is a test"))
+        val markdown =
+            """
+## Here is a Test
+This test contains a link to a link that you can try out.
+* [Test.Page]
+""".trimIndent()
+
+        val rendered = pageRenderingInteractor.render(Page("test", markdown))
+
+        println(rendered)
+
+        rendered.shouldContain("<li><a href=\"/page/create/Test.Page\">Test.Page</a>")
+    }
+
 }

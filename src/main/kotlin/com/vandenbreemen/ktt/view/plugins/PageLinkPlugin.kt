@@ -6,14 +6,15 @@ import com.vandenbreemen.ktt.view.PageRenderingPlugin
 class PageLinkPlugin(private val repository: SQLiteWikiRepository): PageRenderingPlugin {
 
     override fun process(markdown: String): String {
-        return markdown.replace("[^!]([\\[]([A-Za-z0-9 .()]+)[\\]])".toRegex(setOf(RegexOption.MULTILINE))) {
-            val linkText = it.groupValues[2]
+        return markdown.replace("([^!])([\\[]([A-Za-z0-9 .()]+)[\\]])".toRegex(setOf(RegexOption.MULTILINE))) {
+            val linkText = it.groupValues[3]
+            val prefixChar = it.groupValues[1]
 
             repository.searchPageByTitle(linkText)?.let { existingPageId->
                 return@replace "[$linkText](/page/$existingPageId)"
             }
 
-            "[$linkText](/page/create/$linkText)"
+            "$prefixChar[$linkText](/page/create/$linkText)"
         }
     }
 }
