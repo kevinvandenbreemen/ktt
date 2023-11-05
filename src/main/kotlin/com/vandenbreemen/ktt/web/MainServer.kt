@@ -1,7 +1,6 @@
 package com.vandenbreemen.ktt.web
 
 import com.vandenbreemen.ktt.interactor.*
-import com.vandenbreemen.ktt.macro.AboutMacro
 import com.vandenbreemen.ktt.main.WikiApplication
 import com.vandenbreemen.ktt.message.NoSuchPageError
 import com.vandenbreemen.ktt.model.Page
@@ -9,8 +8,6 @@ import com.vandenbreemen.ktt.model.StylesheetType
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 import com.vandenbreemen.ktt.presenter.WikiPresenter
 import com.vandenbreemen.ktt.view.PageRenderingInteractor
-import com.vandenbreemen.ktt.view.plugins.PageLinkPlugin
-import com.vandenbreemen.ktt.view.plugins.TableOfContentsPlugin
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -27,16 +24,7 @@ import java.io.File
 
 val logger = LoggerFactory.getLogger("MainServer")
 
-fun startServer() {
-
-    val staticConteInteractor = StaticContentInteractor()
-
-    WikiApplication.macroRegistry.register(AboutMacro())
-
-    val repository = SQLiteWikiRepository(("main.db"))
-
-    WikiApplication.pageRenderingPluginRegistry.register(PageLinkPlugin(repository))
-    WikiApplication.pageRenderingPluginRegistry.register(TableOfContentsPlugin())
+fun startServer(repository: SQLiteWikiRepository, staticContentInteractor: StaticContentInteractor) {
 
     val renderingInteractor = PageRenderingInteractor(MarkdownInteractor(), WikiApplication.pageRenderingPluginRegistry)
     val configInteractor = ConfigurationInteractor(repository)
@@ -51,7 +39,7 @@ fun startServer() {
     embeddedServer(Netty, port) {
         routing {
 
-            setupStaticContent(staticConteInteractor)
+            setupStaticContent(staticContentInteractor)
 
             mainPage(presenter, configInteractor)
             config(configInteractor)
