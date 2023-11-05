@@ -4,6 +4,7 @@ import com.vandenbreemen.ktt.interactor.MarkdownInteractor
 import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 import com.vandenbreemen.ktt.view.plugins.PageLinkPlugin
+import com.vandenbreemen.ktt.view.plugins.TableOfContentsPlugin
 import org.amshove.kluent.shouldContain
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -19,6 +20,7 @@ class PageRenderingInteractorTest() {
     @BeforeEach
     fun setup() {
         registry.register(PageLinkPlugin(repository))
+        registry.register(TableOfContentsPlugin())
     }
 
     @AfterEach
