@@ -1,5 +1,13 @@
 # Getting Started
 ## Up and Running
+
+### Running with Gradle (FatJar)
+Once you've checked out the project simply run the ```FatJar``` gradle task to build ktt.jar, a jar containing the project and its dependencies.  Then you can run the program as follows:
+```
+java -jar ktt.jar
+```
+
+### From inside your IDE
 You can start the wiki by running the ```WikiApplication``` class.  The server will start on port 8080.  Data will be stored in database file main.db in the same directory.
 
 # Main Features
