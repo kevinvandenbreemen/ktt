@@ -1,9 +1,11 @@
 package com.vandenbreemen.ktt.main
 
-import com.vandenbreemen.ktt.interactor.StaticContentInteractor
+import com.vandenbreemen.ktt.interactor.*
 import com.vandenbreemen.ktt.macro.AboutMacro
 import com.vandenbreemen.ktt.macro.MacroRegistry
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
+import com.vandenbreemen.ktt.presenter.WikiPresenter
+import com.vandenbreemen.ktt.view.PageRenderingInteractor
 import com.vandenbreemen.ktt.view.PageRenderingPluginRegistry
 import com.vandenbreemen.ktt.view.plugins.MacrosPlugin
 import com.vandenbreemen.ktt.view.plugins.PageLinkPlugin
@@ -15,10 +17,7 @@ import com.vandenbreemen.ktt.web.startServer
  */
 object WikiApplication {
 
-    private val staticContentInteractor = StaticContentInteractor()
-    private val repository = SQLiteWikiRepository(("main.db"))
-
-    val pageRenderingPluginRegistry: PageRenderingPluginRegistry by lazy {
+    private val pageRenderingPluginRegistry: PageRenderingPluginRegistry by lazy {
         PageRenderingPluginRegistry()
     }
 
@@ -28,6 +27,16 @@ object WikiApplication {
         }
     }
 
+    private val staticContentInteractor = StaticContentInteractor()
+    private val repository = SQLiteWikiRepository(("main.db"))
+
+    private val renderingInteractor = PageRenderingInteractor(MarkdownInteractor(), pageRenderingPluginRegistry)
+    private val configInteractor = ConfigurationInteractor(repository)
+
+    private val presenter = WikiPresenter( WikiInteractor(TestWikiInteractor(), repository), WikiPageTagsInteractor(repository),
+        customCssInteractor = CustomCssInteractor(repository)
+    )
+
     @JvmStatic
     fun main(args: Array<String>) {
 
@@ -36,7 +45,7 @@ object WikiApplication {
         pageRenderingPluginRegistry.register(PageLinkPlugin(repository))
         pageRenderingPluginRegistry.register(TableOfContentsPlugin())
 
-        startServer(repository, staticContentInteractor)
+        startServer(staticContentInteractor, configInteractor, renderingInteractor, presenter)
     }
 
 }

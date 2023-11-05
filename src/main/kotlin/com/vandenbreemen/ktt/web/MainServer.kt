@@ -1,11 +1,10 @@
 package com.vandenbreemen.ktt.web
 
-import com.vandenbreemen.ktt.interactor.*
-import com.vandenbreemen.ktt.main.WikiApplication
+import com.vandenbreemen.ktt.interactor.ConfigurationInteractor
+import com.vandenbreemen.ktt.interactor.StaticContentInteractor
 import com.vandenbreemen.ktt.message.NoSuchPageError
 import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.model.StylesheetType
-import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 import com.vandenbreemen.ktt.presenter.WikiPresenter
 import com.vandenbreemen.ktt.view.PageRenderingInteractor
 import io.ktor.http.*
@@ -24,14 +23,11 @@ import java.io.File
 
 val logger = LoggerFactory.getLogger("MainServer")
 
-fun startServer(repository: SQLiteWikiRepository, staticContentInteractor: StaticContentInteractor) {
+fun startServer(staticContentInteractor: StaticContentInteractor, configInteractor: ConfigurationInteractor,
+                renderingInteractor: PageRenderingInteractor, presenter: WikiPresenter
+                ) {
 
-    val renderingInteractor = PageRenderingInteractor(MarkdownInteractor(), WikiApplication.pageRenderingPluginRegistry)
-    val configInteractor = ConfigurationInteractor(repository)
 
-    val presenter = WikiPresenter( WikiInteractor(TestWikiInteractor(), repository), WikiPageTagsInteractor(repository),
-            customCssInteractor = CustomCssInteractor(repository)
-        )
 
     val port = configInteractor.getPort()
     logger.info("Running on port $port")
