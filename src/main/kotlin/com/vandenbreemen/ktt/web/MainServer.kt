@@ -63,7 +63,7 @@ fun startServer(staticContentInteractor: StaticContentInteractor, configInteract
 
 private fun Routing.setupStaticContent(staticContentInteractor: StaticContentInteractor) {
     staticContentInteractor.setupDirectory()
-    staticFiles("/res", File(staticContentInteractor.staticContentRoot))
+    staticFiles(staticContentInteractor.staticContentWebPath, File(staticContentInteractor.staticContentRoot))
 }
 
 private fun Routing.customCssTooling(presenter: WikiPresenter) {
