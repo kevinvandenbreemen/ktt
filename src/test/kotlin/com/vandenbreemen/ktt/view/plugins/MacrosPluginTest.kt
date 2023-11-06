@@ -14,6 +14,10 @@ class MacrosPluginTest {
 
         override fun execute(args: Map<String, String>): String {
             val message = args["message"] ?: "(missing message)"
+            val additional = args["additional"]
+            if(additional != null) {
+                return "got pair:  ${Pair<String, String>(message, additional).toString()}"
+            }
             return "HiMsg:  $message"
         }
     }
@@ -78,6 +82,24 @@ This is a special test.
 
         println("RENDERED:\n===================\n$rendered")
         rendered.shouldContain("HiMsg:  (missing message)")
+    }
+
+    @Test
+    fun `should handle macros with multiple arguments`() {
+        val markdown = """
+# Hello world
+
+this is a test of some wiki content.
+
+{@macro:HelloWorld message=Hi how are you?, additional=this/is/a/test}
+
+This is a special test.
+        """.trimIndent()
+
+        val rendered = plugin.process(markdown)
+
+        println("RENDERED:\n===================\n$rendered")
+        rendered.shouldContain("got pair:  (Hi how are you?, this/is/a/test)")
     }
 
 }

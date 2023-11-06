@@ -15,7 +15,7 @@ class MacrosPlugin(private val macroRegistry: MacroRegistry): PageRenderingPlugi
 
             val argMap: MutableMap<String, String> = mutableMapOf()
             if(macro.groupValues[2].isNotEmpty()) {
-                val argumentsRaw = macro.groupValues[2].split("[\\s]*[,][\\s]*")
+                val argumentsRaw = macro.groupValues[2].split("[\\s]*[,][\\s]*".toRegex())
                 argumentsRaw.mapNotNull { argument ->
                     argument.split("=").let { rawPair ->
                         if(rawPair.size != 2) {
