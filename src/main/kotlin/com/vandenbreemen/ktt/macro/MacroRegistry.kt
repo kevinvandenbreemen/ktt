@@ -9,6 +9,9 @@ class MacroRegistry {
     val allMacros: List<Macro> get() = macrosByName.values.toList()
 
     fun register(macro: Macro) {
+        if(macrosByName.containsKey(macro.name)) {
+            throw RuntimeException("There is already a macro with name `${macro.name}` registered")
+        }
         macrosByName[macro.name] = macro
     }
 
