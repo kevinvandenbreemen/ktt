@@ -18,7 +18,7 @@ import com.vandenbreemen.ktt.web.startServer
 object WikiApplication {
 
     private val repository = SQLiteWikiRepository(("main.db"))
-    private val systemAccessInteractor = SystemAccessInteractor(repository)
+    val systemAccessInteractor = SystemAccessInteractor(repository)
 
     private val pageRenderingPluginRegistry: PageRenderingPluginRegistry by lazy {
         PageRenderingPluginRegistry()

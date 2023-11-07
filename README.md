@@ -43,7 +43,10 @@ Define a class that implements the ```Macro``` interface.  Then add it to the  m
 WikiApplication.macroRegistry.register(myMacro)
 ```
 
-At the moment this is done in the MainServer.kt file.
+At the moment this is done in the WikiApplication.kt file.
+
+#### Data Storage in Macros
+You'll note that the ```Macro``` interface's ```execute()``` method includes a ```SystemAccessInteractor``` argument.  You can use this to store or retrieve data when your macro executes.   
 
 ## Custom CSS
 You can customize the css for the wiki by updating the styling for the appropriate section of each page on the main screen (by going to ```/``` on the wiki).  Note that for now css classes are used to control most of the styling.  So, for example, the body of a wiki entry being displayed falls under css class ```.wiki_entry```.  You can extend this system by adding more classes (see the ```Classes``` class).  If you wish to make a given css class customizable simply add an entry for it to the StylesheetType enum, and provide the css class you wish to make customizable as constructor argument, as in:
@@ -54,6 +57,11 @@ enum class StylesheetType(val cssClass: String) {
     ControlPanel(controlPanel)
 }
 ```
+
+# Storage and Configuration
+You can use the ```WikiApplication.systemAccessInteractor``` field to get a ```SystemAccessInteractor``` that lets you store data should you need to store or retrieve configurations etc.
+
+Generally, if you are modifying or maintaining this project, the SystemAccessInteractor should provide only a minimal set of features.  This allows for the rest of the application to function smoothly without say someone's third party code messing around with wiki pages in the database.
 
 # Libraries Used
 ## ktt
