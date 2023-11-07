@@ -1,10 +1,14 @@
 package com.vandenbreemen.ktt.view.plugins
 
+import com.vandenbreemen.ktt.interactor.SystemAccessInteractor
 import com.vandenbreemen.ktt.macro.Macro
 import com.vandenbreemen.ktt.macro.MacroRegistry
+import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 import org.amshove.kluent.shouldContain
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.io.File
 
 class MacrosPluginTest {
 
@@ -12,7 +16,7 @@ class MacrosPluginTest {
         override val name: String
             get() = "HelloWorld"
 
-        override fun execute(args: Map<String, String>): String {
+        override fun execute(args: Map<String, String>, systemAccessInteractor: SystemAccessInteractor): String {
             val message = args["message"] ?: "(missing message)"
             val additional = args["additional"]
             if(additional != null) {
@@ -23,11 +27,17 @@ class MacrosPluginTest {
     }
 
     private val registry = MacroRegistry()
-    private val plugin = MacrosPlugin(registry)
+    val fileName = "macrosPluginTest.dat"
+    private val plugin = MacrosPlugin(registry, SystemAccessInteractor(SQLiteWikiRepository(fileName)))
 
     @BeforeEach
     fun setup() {
         registry.register(HelloWorldTestMacro())
+    }
+
+    @AfterEach
+    fun tearDown() {
+        File(fileName).delete()
     }
 
     @Test

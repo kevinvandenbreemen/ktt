@@ -1,9 +1,10 @@
 package com.vandenbreemen.ktt.view.plugins
 
+import com.vandenbreemen.ktt.interactor.SystemAccessInteractor
 import com.vandenbreemen.ktt.macro.MacroRegistry
 import com.vandenbreemen.ktt.view.PageRenderingPlugin
 
-class MacrosPlugin(private val macroRegistry: MacroRegistry): PageRenderingPlugin {
+class MacrosPlugin(private val macroRegistry: MacroRegistry, private val systemAccessInteractor: SystemAccessInteractor): PageRenderingPlugin {
     override fun process(markdown: String): String {
         val allMacros = "[{]@macro:([a-zA-Z0-9]+)[\\s]*([^}]*)[}]".toRegex().findAll(markdown)
 
@@ -29,7 +30,7 @@ class MacrosPlugin(private val macroRegistry: MacroRegistry): PageRenderingPlugi
             }
 
             macroRegistry.getMacroByName(macroName) ?.let { macro ->
-                resultantMarkdown = resultantMarkdown.replace(macroExpression, macro.execute(argMap))
+                resultantMarkdown = resultantMarkdown.replace(macroExpression, macro.execute(argMap, systemAccessInteractor))
             } ?: run {
                 resultantMarkdown = resultantMarkdown.replace(macroExpression, "\n\nUnknown Macro:  $macroName\n\n")
             }
