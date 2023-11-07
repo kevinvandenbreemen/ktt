@@ -84,6 +84,15 @@ class SQLiteWikiRepository(private val databasePath: String) {
                 CONSTRAINT fk_pgh_pageid FOREIGN KEY(pageId) REFERENCES page(id) ON DELETE CASCADE
             )
         """.trimIndent())
+
+        schema.addDatabaseChange(7, """
+            CREATE TABLE d_config_item(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                key TEXT NOT NULL,
+                value TEXT NOT NULL
+            );
+            CREATE UNIQUE INDEX uc_cfg_item ON d_config_item(key);
+        """.trimIndent())
     }
 
     fun createPage(page: Page): Int {
@@ -217,5 +226,24 @@ class SQLiteWikiRepository(private val databasePath: String) {
         return result.isNotEmpty()
     }
 
+    /**
+     * Stores the given value to the config item table
+     */
+    fun storeValue(key: String, value: String) {
+        dao.insert("INSERT OR REPLACE INTO d_config_item(key, value) VALUES (?, ?)", arrayOf(key, value))
+    }
+
+    /**
+     * Retrieves the given value from the database.  If none is present then the method will return null
+     */
+    fun retrieveValue(key: String): String? {
+        return dao.query("SELECT value FROM d_config_item WHERE key=?", arrayOf(key)).let { result->
+            if(result.isNotEmpty()) {
+                return result[0]["value"] as String
+            } else {
+                return null
+            }
+        }
+    }
 
 }
