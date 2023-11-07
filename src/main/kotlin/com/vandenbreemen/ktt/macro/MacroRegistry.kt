@@ -6,6 +6,7 @@ package com.vandenbreemen.ktt.macro
 class MacroRegistry {
 
     private val macrosByName = mutableMapOf<String, Macro>()
+    val allMacros: List<Macro> get() = macrosByName.values.toList()
 
     fun register(macro: Macro) {
         macrosByName[macro.name] = macro

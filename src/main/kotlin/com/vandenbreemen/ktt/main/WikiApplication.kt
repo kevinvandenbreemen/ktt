@@ -3,6 +3,7 @@ package com.vandenbreemen.ktt.main
 import com.vandenbreemen.ktt.interactor.*
 import com.vandenbreemen.ktt.macro.AboutMacro
 import com.vandenbreemen.ktt.macro.MacroRegistry
+import com.vandenbreemen.ktt.macro.MacroRegistryMacro
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 import com.vandenbreemen.ktt.presenter.WikiPresenter
 import com.vandenbreemen.ktt.view.PageRenderingInteractor
@@ -28,6 +29,7 @@ object WikiApplication {
     val macroRegistry: MacroRegistry by lazy {
         MacroRegistry().also {
             pageRenderingPluginRegistry.register(MacrosPlugin(it, systemAccessInteractor))
+            it.register(MacroRegistryMacro(it))
         }
     }
 

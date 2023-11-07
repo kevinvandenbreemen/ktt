@@ -10,6 +10,11 @@ interface Macro {
     val name: String
 
     /**
+     * Description for more information on how the macro works etc
+     */
+    val description: String?
+
+    /**
      * Execute with the parameters, returning content as a string.  Content should be in markdown
      */
     fun execute(args: Map<String, String>, systemAccessInteractor: SystemAccessInteractor): String
