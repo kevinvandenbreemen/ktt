@@ -135,6 +135,22 @@ This test contains a link to a [Test.Page(num)] that you can try out.
     }
 
     @Test
+    fun `should create page links that contain dashes`() {
+        repository.createPage(Page("Test Page", "This is a test"))
+        val markdown =
+            """
+## Here is a Test
+This test contains a link to a [TICK-1234] that you can try out.
+""".trimIndent()
+
+        val rendered = pageRenderingInteractor.render(Page("test", markdown))
+
+        println(rendered)
+
+        rendered.shouldContain("<a href=\"/page/create/TICK-1234\">TICK-1234</a>")
+    }
+
+    @Test
     fun `should ignore alt texts for embedded images while creating links`() {
         repository.createPage(Page("Test Page", "This is a test"))
         val markdown =
