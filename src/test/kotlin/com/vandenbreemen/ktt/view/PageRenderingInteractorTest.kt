@@ -203,4 +203,19 @@ This test contains a link to a link that you can try out.
         rendered.shouldContain("<li><a href=\"/page/2\">Test.Page</a>")
     }
 
+    @Test
+    fun `should properly render a page whose content is a single link`() {
+        repository.createPage(Page("Test Page", "This is a test"))
+        val markdown =
+            """
+[Test.Page]
+""".trimIndent()
+        repository.createPage(Page("Test.Page", "This is a test"))
+        val rendered = pageRenderingInteractor.render(Page("test", markdown))
+
+        println(rendered)
+
+        rendered.shouldContain("<a href=\"/page/2\">Test.Page</a>")
+    }
+
 }
