@@ -10,7 +10,7 @@ internal class MacroRegistryMacro(private val macroRegistry: MacroRegistry): Mac
     override val description: String?
         get() = "Lists all macros currently available in this wiki"
 
-    override fun execute(args: Map<String, String>, systemAccessInteractor: SystemAccess): String {
+    override fun execute(args: Map<String, String>, systemAccess: SystemAccess): String {
 
         return """
 ---------------------------------

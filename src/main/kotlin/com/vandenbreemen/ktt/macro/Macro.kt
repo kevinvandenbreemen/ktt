@@ -17,5 +17,5 @@ interface Macro {
     /**
      * Execute with the parameters, returning content as a string.  Content should be in markdown
      */
-    fun execute(args: Map<String, String>, systemAccessInteractor: SystemAccess): String
+    fun execute(args: Map<String, String>, systemAccess: SystemAccess): String
 }

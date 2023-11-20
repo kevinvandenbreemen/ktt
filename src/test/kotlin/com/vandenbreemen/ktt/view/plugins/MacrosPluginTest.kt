@@ -20,7 +20,7 @@ internal class MacrosPluginTest {
         override val description: String?
             get() = "Unit testing macro"
 
-        override fun execute(args: Map<String, String>, systemAccessInteractor: SystemAccess): String {
+        override fun execute(args: Map<String, String>, systemAccess: SystemAccess): String {
             val message = args["message"] ?: "(missing message)"
             val additional = args["additional"]
             if(additional != null) {
