@@ -6,7 +6,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import java.io.File
 
-class SystemAccessInteractorTest {
+internal class SystemAccessInteractorTest {
 
     val filename = "sysaccess.dat"
     val interactor = SystemAccessInteractor(SQLiteWikiRepository(filename))

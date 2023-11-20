@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.File
 
-class PageRenderingInteractorTest() {
+internal class PageRenderingInteractorTest() {
 
     val registry = PageRenderingPluginRegistry()
     val repository = SQLiteWikiRepository("page_plugin_tests.dat")

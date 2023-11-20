@@ -5,7 +5,7 @@ import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.model.PageSearchResult
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 
-class WikiInteractor(private val testWikiInteractor: TestWikiInteractor, private val repository: SQLiteWikiRepository) {
+internal class WikiInteractor(private val testWikiInteractor: TestWikiInteractor, private val repository: SQLiteWikiRepository) {
 
     /**
      * fetch the page with the given ID

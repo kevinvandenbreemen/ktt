@@ -1,5 +1,6 @@
 package com.vandenbreemen.ktt.view.plugins
 
+import com.vandenbreemen.ktt.api.SystemAccess
 import com.vandenbreemen.ktt.interactor.SystemAccessInteractor
 import com.vandenbreemen.ktt.macro.Macro
 import com.vandenbreemen.ktt.macro.MacroRegistry
@@ -10,16 +11,16 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.File
 
-class MacrosPluginTest {
+internal class MacrosPluginTest {
 
-    class HelloWorldTestMacro(): Macro {
+    internal class HelloWorldTestMacro(): Macro {
         override val name: String
             get() = "HelloWorld"
 
         override val description: String?
             get() = "Unit testing macro"
 
-        override fun execute(args: Map<String, String>, systemAccessInteractor: SystemAccessInteractor): String {
+        override fun execute(args: Map<String, String>, systemAccessInteractor: SystemAccess): String {
             val message = args["message"] ?: "(missing message)"
             val additional = args["additional"]
             if(additional != null) {

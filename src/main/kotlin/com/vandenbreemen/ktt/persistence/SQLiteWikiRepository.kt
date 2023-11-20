@@ -10,7 +10,7 @@ import com.vandenbreemen.ktt.view.UIConfiguration
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
-class SQLiteWikiRepository(private val databasePath: String) {
+internal class SQLiteWikiRepository(private val databasePath: String) {
 
     private val dao = SQLiteDAO(databasePath)
 

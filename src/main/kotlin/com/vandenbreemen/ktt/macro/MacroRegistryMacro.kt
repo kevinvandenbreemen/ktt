@@ -1,8 +1,8 @@
 package com.vandenbreemen.ktt.macro
 
-import com.vandenbreemen.ktt.interactor.SystemAccessInteractor
+import com.vandenbreemen.ktt.api.SystemAccess
 
-class MacroRegistryMacro(private val macroRegistry: MacroRegistry): Macro {
+internal class MacroRegistryMacro(private val macroRegistry: MacroRegistry): Macro {
 
     override val name: String
         get() = "macros"
@@ -10,7 +10,7 @@ class MacroRegistryMacro(private val macroRegistry: MacroRegistry): Macro {
     override val description: String?
         get() = "Lists all macros currently available in this wiki"
 
-    override fun execute(args: Map<String, String>, systemAccessInteractor: SystemAccessInteractor): String {
+    override fun execute(args: Map<String, String>, systemAccessInteractor: SystemAccess): String {
 
         return """
 ---------------------------------

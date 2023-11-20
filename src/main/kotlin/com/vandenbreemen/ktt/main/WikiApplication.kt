@@ -1,5 +1,6 @@
 package com.vandenbreemen.ktt.main
 
+import com.vandenbreemen.ktt.api.SystemAccess
 import com.vandenbreemen.ktt.interactor.*
 import com.vandenbreemen.ktt.macro.AboutMacro
 import com.vandenbreemen.ktt.macro.MacroRegistry
@@ -19,7 +20,7 @@ import com.vandenbreemen.ktt.web.startServer
 object WikiApplication {
 
     private val repository = SQLiteWikiRepository(("main.db"))
-    val systemAccessInteractor = SystemAccessInteractor(repository)
+    val systemAccessInteractor: SystemAccess = SystemAccessInteractor(repository)
 
     private val pageRenderingPluginRegistry: PageRenderingPluginRegistry by lazy {
         PageRenderingPluginRegistry()

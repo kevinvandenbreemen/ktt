@@ -7,7 +7,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import java.io.File
 
-class CustomCssInteractorTest {
+internal class CustomCssInteractorTest {
 
     val path = "cust_css.dat"
     val customCssInteractor = CustomCssInteractor(SQLiteWikiRepository(path))

@@ -2,7 +2,7 @@ package com.vandenbreemen.ktt.interactor
 
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 
-class WikiPageTagsInteractor(private val repository: SQLiteWikiRepository) {
+internal class WikiPageTagsInteractor(private val repository: SQLiteWikiRepository) {
 
     fun addUpdatePageTags(pageId: String, tagsString: String) {
         val tags = tagsString.split("[\\s]*[,][\\s]*".toRegex())

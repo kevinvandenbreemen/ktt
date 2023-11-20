@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class WikiPresenter(private val wikiInteractor: WikiInteractor, private val pageTagsInteractor: WikiPageTagsInteractor,
+internal class WikiPresenter(private val wikiInteractor: WikiInteractor, private val pageTagsInteractor: WikiPageTagsInteractor,
         private val breadcrumbsInteractor: BreadcrumbsInteractor = BreadcrumbsInteractor(),
         private val customCssInteractor: CustomCssInteractor,
     ) {

@@ -1,10 +1,10 @@
 package com.vandenbreemen.ktt.view.plugins
 
-import com.vandenbreemen.ktt.interactor.SystemAccessInteractor
+import com.vandenbreemen.ktt.api.SystemAccess
 import com.vandenbreemen.ktt.macro.MacroRegistry
 import com.vandenbreemen.ktt.view.PageRenderingPlugin
 
-class MacrosPlugin(private val macroRegistry: MacroRegistry, private val systemAccessInteractor: SystemAccessInteractor): PageRenderingPlugin {
+internal class MacrosPlugin(private val macroRegistry: MacroRegistry, private val systemAccessInteractor: SystemAccess): PageRenderingPlugin {
     override fun process(markdown: String): String {
         val allMacros = "[{]@macro:([a-zA-Z0-9]+)[\\s]*([^}]*)[}]".toRegex().findAll(markdown)
 

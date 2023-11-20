@@ -6,7 +6,7 @@ import com.vandenbreemen.ktt.view.UIConfiguration
 /**
  * Handle anything relating to configuration of the system, including some UI shortcuts etc.
  */
-class ConfigurationInteractor(private val wikiRepository: SQLiteWikiRepository) {
+internal class ConfigurationInteractor(private val wikiRepository: SQLiteWikiRepository) {
 
     fun getPort(): Int {
         return wikiRepository.getUIConfiguration().runPort

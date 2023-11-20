@@ -23,7 +23,7 @@ import java.io.File
 
 val logger = LoggerFactory.getLogger("MainServer")
 
-fun startServer(staticContentInteractor: StaticContentInteractor, configInteractor: ConfigurationInteractor,
+internal fun startServer(staticContentInteractor: StaticContentInteractor, configInteractor: ConfigurationInteractor,
                 renderingInteractor: PageRenderingInteractor, presenter: WikiPresenter
                 ) {
 

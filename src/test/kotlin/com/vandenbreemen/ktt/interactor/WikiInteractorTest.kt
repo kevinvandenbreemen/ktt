@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.File
 
-class WikiInteractorTest {
+internal class WikiInteractorTest {
 
     val testWikiInteractor = TestWikiInteractor()
     val filePath = "interactor_test.db"

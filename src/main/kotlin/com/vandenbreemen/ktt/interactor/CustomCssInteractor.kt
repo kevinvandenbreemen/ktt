@@ -4,7 +4,7 @@ import com.vandenbreemen.ktt.model.StylesheetType
 import com.vandenbreemen.ktt.persistence.SQLiteWikiRepository
 import com.vandenbreemen.ktt.web.css
 
-class CustomCssInteractor(private val repository: SQLiteWikiRepository) {
+internal class CustomCssInteractor(private val repository: SQLiteWikiRepository) {
 
     /**
      * Creates/updates stylesheet for the given type of content

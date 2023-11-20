@@ -7,7 +7,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import java.io.File
 
-class MarkdownInteractorTest {
+internal class MarkdownInteractorTest {
 
     private val file = "mkInteractorTest.dat"
     val repo = SQLiteWikiRepository(file)

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import java.io.File
 
-class ConfigurationInteractorTest {
+internal class ConfigurationInteractorTest {
 
     val path = "config_tst.dat"
     val configurationInteractor = ConfigurationInteractor(SQLiteWikiRepository(path))

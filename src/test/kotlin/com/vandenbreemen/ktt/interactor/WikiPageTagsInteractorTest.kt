@@ -7,7 +7,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import java.io.File
 
-class WikiPageTagsInteractorTest {
+internal class WikiPageTagsInteractorTest {
     val testWikiInteractor = TestWikiInteractor()
     val filePath = "interactor_test.db"
     val repository = SQLiteWikiRepository(filePath)
