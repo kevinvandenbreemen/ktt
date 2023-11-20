@@ -20,7 +20,7 @@ import com.vandenbreemen.ktt.web.startServer
 object WikiApplication {
 
     private val repository = SQLiteWikiRepository(("main.db"))
-    val systemAccessInteractor: SystemAccess = SystemAccessInteractor(repository)
+    val systemAccess: SystemAccess = SystemAccessInteractor(repository)
 
     private val pageRenderingPluginRegistry: PageRenderingPluginRegistry by lazy {
         PageRenderingPluginRegistry()
@@ -29,7 +29,7 @@ object WikiApplication {
     @JvmStatic
     val macroRegistry: MacroRegistry by lazy {
         MacroRegistry().also {
-            pageRenderingPluginRegistry.register(MacrosPlugin(it, systemAccessInteractor))
+            pageRenderingPluginRegistry.register(MacrosPlugin(it, systemAccess))
             it.register(MacroRegistryMacro(it))
         }
     }
