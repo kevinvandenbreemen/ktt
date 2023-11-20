@@ -7,13 +7,10 @@ import com.vandenbreemen.ktt.model.Page
 import com.vandenbreemen.ktt.model.PageSearchResult
 import com.vandenbreemen.ktt.model.StylesheetType
 import com.vandenbreemen.ktt.view.UIConfiguration
-import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 class SQLiteWikiRepository(private val databasePath: String) {
-
-    private val logger = LoggerFactory.getLogger(SQLiteWikiRepository::class.java)
 
     private val dao = SQLiteDAO(databasePath)
 
