@@ -21,7 +21,6 @@ dependencies {
     val markdown_version = "0.5.0"
     val coroutine_test_version = "1.7.3"
     val kluent_version = "1.73"
-    val sqlite_version = "3.43.0.0"
     val sqlite_dao_version = "1.1.2.0002"
     val kotlin_html_version = "0.9.1"
     val kmarkdown_tools_version = "1.0.0.0"
@@ -32,7 +31,6 @@ dependencies {
     implementation("org.jetbrains:markdown:$markdown_version")
 
     //  Persistence
-    implementation("org.xerial:sqlite-jdbc:$sqlite_version")
     implementation("com.github.kevinvandenbreemen:sqlite-dao:$sqlite_dao_version")
 
     //  HTML
